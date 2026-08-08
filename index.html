@@ -375,9 +375,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <div style="display:flex;flex-direction:column;justify-content:center;gap:18px;padding:clamp(20px,3vw,32px);border:3px dashed rgba(218,218,122,.35);border-radius:22px">
-        <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:24px;color:#DADA7A;line-height:1.2">ორი დღე. ერთი ბილეთი.</div>
-        <p style="margin:0;font-size:16px;line-height:1.6;color:#e0cbd6">ადგილები შეზღუდულია — დაიტოვე შენი ადგილი ახლავე.</p>
-        <a href="#lead" class="btn btn-primary btn-md btn-sticker">ბილეთის აღება</a>
+        <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:24px;color:#DADA7A;line-height:1.2">ორი დღე, ერთი ბილეთი</div>
+        <p style="margin:0;font-size:16px;line-height:1.6;color:#e0cbd6">გამოსცადე საკუთარ თავზე ფხიზელი გართობის ძალა!</p>
+        <a href="#lead" class="btn btn-primary btn-md btn-sticker">ბილეთები</a>
       </div>
     </div>
   </div>
@@ -445,14 +445,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <footer data-screen-label="07 Footer" style="background:#250216;padding:clamp(48px,6vw,80px) clamp(18px,4vw,40px) 40px;border-top:2px solid rgba(218,218,122,.18)">
   <div style="max-width:1180px;margin:0 auto;display:grid;gap:clamp(32px,4vw,56px)">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(24px,3vw,48px);align-items:center;padding:clamp(24px,3vw,40px);border:3px solid rgba(218,218,122,.28);border-radius:22px">
-      <div>
+    <div style="position:relative;overflow:hidden;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(24px,3vw,48px);align-items:center;padding:clamp(24px,3vw,40px);border:3px solid rgba(218,218,122,.28);border-radius:22px">
+      <img src="Visial Elements/Bird02.png" alt="" aria-hidden="true" loading="lazy" decoding="async" style="position:absolute;right:0;bottom:-16px;width:420px;max-width:75%;height:auto;pointer-events:none;z-index:0">
+      <div style="position:relative;z-index:1">
         <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#F47C6C">პარტნიორობა</div>
         <div style="margin-top:12px;font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(24px,3vw,34px);line-height:1.15;color:#DADA7A">თქვენი ბრენდი × YogaFest</div>
         <p style="margin:12px 0 0;max-width:520px;font-size:16px;line-height:1.6;color:#c199ac">შექმენი გამოცდილება, რომელიც ლოგოს განთავსებაზე მეტია. YogaFest კომპანიებს სთავაზობს სასპონსორო და კორპორატიულ თანამშრომლობას — ინდივიდუალურ სივრცეს, აქტივობებს და საკომუნიკაციო პაკეტებს ბრენდისთვის.</p>
         <p style="margin:12px 0 0;max-width:520px;font-size:16px;line-height:1.6;color:#c199ac">მოგვწერე და ერთად შევქმნათ თანამშრომლობის ისეთი პლატფორმა, რომელიც ბრენდს და აუდიტორიას რეალურ ღირებულებას მოუტანს.</p>
       </div>
-      <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:flex-start">
+      <div style="position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:14px;justify-content:flex-start">
         <button type="button" id="partner-cta" class="btn btn-primary btn-md btn-sticker">გახდი პარტნიორი</button>
       </div>
     </div>
@@ -497,31 +498,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div id="partner-modal" role="dialog" aria-modal="true" aria-labelledby="partner-modal-title" style="position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px">
   <div id="partner-modal-backdrop" style="position:absolute;inset:0;background:rgba(37,2,22,.8);backdrop-filter:blur(4px)"></div>
-  <div class="card card-dark card-sticker" style="position:relative;z-index:1;max-width:480px;width:100%;padding:clamp(22px,3vw,36px);max-height:90vh;overflow-y:auto">
-    <button id="partner-modal-close" type="button" aria-label="დახურვა" style="position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:2px solid rgba(218,218,122,.35);background:transparent;color:#DADA7A;font-size:16px;line-height:1;cursor:pointer">✕</button>
+  <div class="card card-green card-sticker" style="position:relative;z-index:1;max-width:480px;width:100%;padding:clamp(22px,3vw,36px);max-height:90vh;overflow-y:auto">
+    <button id="partner-modal-close" type="button" aria-label="დახურვა" style="position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:2px solid rgba(54,5,34,.35);background:transparent;color:#360522;font-size:16px;line-height:1;cursor:pointer">✕</button>
 
     <div id="partner-modal-success" style="display:none;flex-direction:column;align-items:flex-start;gap:16px;padding:20px 0">
-      <svg class="sb sb-spin" width="42" height="42" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 0l2.4 7.3L22 9.7l-7.6 2.5L12 22l-2.4-7.8L2 11.7l7.6-2.4L12 0z" fill="#DADA7A"/></svg>
-      <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:26px;color:#DADA7A">გმადლობთ!</div>
-      <p style="margin:0;font-size:17px;line-height:1.6;color:#e0cbd6">თქვენი ელფოსტის აპლიკაცია იხსნება შეტყობინების გასაგზავნად hi@yogafest.ge-ზე.</p>
+      <svg class="sb sb-spin" width="42" height="42" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 0l2.4 7.3L22 9.7l-7.6 2.5L12 22l-2.4-7.8L2 11.7l7.6-2.4L12 0z" fill="#360522"/></svg>
+      <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:26px;color:#360522">გმადლობთ!</div>
+      <p style="margin:0;font-size:17px;line-height:1.6;color:#4a1233">თქვენი ელფოსტის აპლიკაცია იხსნება შეტყობინების გასაგზავნად hi@yogafest.ge-ზე.</p>
     </div>
 
     <form id="partner-modal-form" style="display:grid;gap:16px">
-      <div id="partner-modal-title" style="font-family:'Mersad',sans-serif;font-weight:800;font-size:22px;color:#DADA7A;padding-right:30px">დაგვიტოვე კონტაქტი</div>
-      <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c199ac">
+      <div id="partner-modal-title" style="font-family:'Mersad',sans-serif;font-weight:800;font-size:22px;color:#360522;padding-right:30px">დაგვიტოვე კონტაქტი</div>
+      <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#612348">
         სახელი
-        <input name="name" type="text" required placeholder="თქვენი სახელი" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(218,218,122,.35);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;text-transform:none;letter-spacing:0">
+        <input name="name" type="text" required placeholder="თქვენი სახელი" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(54,5,34,.3);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;text-transform:none;letter-spacing:0">
       </label>
-      <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c199ac">
+      <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#612348">
         ელფოსტა
-        <input name="email" type="email" required placeholder="you@email.com" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(218,218,122,.35);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;text-transform:none;letter-spacing:0">
+        <input name="email" type="email" required placeholder="you@email.com" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(54,5,34,.3);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;text-transform:none;letter-spacing:0">
       </label>
-      <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c199ac">
+      <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#612348">
         შეტყობინება
-        <textarea name="message" rows="4" placeholder="მოგვიყევი შენს ბრენდზე და თანამშრომლობის იდეაზე" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(218,218,122,.35);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;resize:vertical;text-transform:none;letter-spacing:0"></textarea>
+        <textarea name="message" rows="4" placeholder="მოგვიყევი შენს ბრენდზე და თანამშრომლობის იდეაზე" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(54,5,34,.3);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;resize:vertical;text-transform:none;letter-spacing:0"></textarea>
       </label>
-      <button type="submit" class="btn btn-primary" style="margin-top:4px;padding:16px 28px;font-size:18px;border-radius:999px">გამომიგზავნეთ</button>
-      <div style="font-size:14px;line-height:1.5;color:#9d5f81">კონტაქტი გაეგზავნება hi@yogafest.ge-ს.</div>
+      <button type="submit" class="btn btn-solid" style="margin-top:4px;padding:16px 28px;font-size:18px;border-radius:999px">გაგზავნა</button>
     </form>
   </div>
 </div>
