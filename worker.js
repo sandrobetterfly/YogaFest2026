@@ -99,7 +99,7 @@ async function handleLead(request, env) {
   try {
     await WorkerMailer.send(
       {
-        host: 'smtp.zoho.com',
+        host: 'smtppro.zoho.com',
         port: 465,
         secure: true,
         credentials: {
