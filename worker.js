@@ -118,7 +118,15 @@ async function handleLead(request, env) {
       },
     );
   } catch (err) {
-    console.error('lead form: email send failed', err);
+    // Diagnostic only: goes to Cloudflare Workers Logs (console.error / Live
+    // Logs), never to the client. The public response below stays generic —
+    // no SMTP error text, credentials, or stack trace ever reach the browser.
+    // Message is scrubbed in case the SMTP client ever echoes the
+    // credentials back in an error string (e.g. an auth-failure response).
+    console.error('lead form: email send failed', {
+      name: err && err.name,
+      message: redact(err && err.message, [env.ZOHO_SMTP_USER, env.ZOHO_SMTP_PASS]),
+    });
     return json({ ok: false, error: 'send_failed' }, 502);
   }
 
@@ -126,6 +134,17 @@ async function handleLead(request, env) {
 }
 
 // ---------- helpers ----------
+
+// Strips any of the given secret values out of a string before it's logged,
+// in case an SMTP client ever echoes credentials back inside an error message.
+function redact(text, secrets) {
+  if (typeof text !== 'string') return text;
+  let out = text;
+  for (const secret of secrets) {
+    if (secret) out = out.split(secret).join('[REDACTED]');
+  }
+  return out;
+}
 
 function clean(value, maxLen) {
   if (typeof value !== 'string') return '';
