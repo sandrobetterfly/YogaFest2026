@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/yogafest-2026-design-system-9dbc181b-9248-4df4-b99a-8446f43d7424/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/yogafest-2026-design-system-9dbc181b-9248-4df4-b99a-8446f43d7424/tokens/colors.css">
+<link rel="stylesheet" href="_ds/yogafest-2026-design-system-9dbc181b-9248-4df4-b99a-8446f43d7424/tokens/typography.css">
+<link rel="stylesheet" href="_ds/yogafest-2026-design-system-9dbc181b-9248-4df4-b99a-8446f43d7424/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/yogafest-2026-design-system-9dbc181b-9248-4df4-b99a-8446f43d7424/tokens/effects.css">
+<link rel="stylesheet" href="_ds/yogafest-2026-design-system-9dbc181b-9248-4df4-b99a-8446f43d7424/styles.css">
+<script src="_ds/yogafest-2026-design-system-9dbc181b-9248-4df4-b99a-8446f43d7424/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #360522; font-family: 'Mersad', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: #DADA7A; text-decoration: none; }
+  a:hover { color: #F47C6C; }
+  input, textarea { font-family: 'Mersad', system-ui, sans-serif; }
+  input::placeholder, textarea::placeholder { color: #9d5f81; }
+  .leaflet-container { font-family: 'Mersad', system-ui, sans-serif; }
+</style>
+</helmet>
+
+<div style="background:#360522;color:#DADA7A;overflow-x:hidden">
+
+<header style="position:sticky;top:0;z-index:60;background:rgba(37,2,22,.92);backdrop-filter:blur(6px);border-bottom:2px solid rgba(218,218,122,.22)">
+  <div style="max-width:1180px;margin:0 auto;padding:14px clamp(18px,4vw,40px);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+    <a href="#top" style="display:flex;align-items:center;gap:14px">
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Logo" mark="wordmark" colorway="chartreuse" height="34px" base-path="assets" hint-size="150px,34px"></x-import>
+    </a>
+    <nav style="display:flex;align-items:center;gap:clamp(14px,2.4vw,30px);flex-wrap:wrap;font-size:15px;font-weight:600;letter-spacing:.02em">
+      <a href="#mission">მისია</a>
+      <a href="#history">ისტორია</a>
+      <a href="#activities">აქტივობები</a>
+      <a href="#location">ლოკაცია</a>
+      <a href="{{ ticketUrl }}" style="display:inline-flex">
+        <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Button" variant="primary" size="sm" hint-size="120px,34px">ბილეთები</x-import>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<section id="top" data-screen-label="01 Hero" style="position:relative;overflow:hidden;padding:clamp(48px,8vw,96px) clamp(18px,4vw,40px) clamp(56px,7vw,88px)">
+  <img src="assets/illustration.png" alt="" aria-hidden="true" style="position:absolute;left:50%;top:8%;transform:translateX(-50%);width:min(1100px,150%);opacity:.14;pointer-events:none">
+  <div style="position:relative;max-width:1180px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(20px,3vw,32px)">
+    <div style="display:inline-flex;align-items:center;gap:12px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#F47C6C">
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Starburst" color="red" size="18px" base-path="assets" spin="{{ true }}" hint-size="18px,18px"></x-import>
+      Sober Rave · ფხიზელი ფესტივალი
+    </div>
+    <h1 style="margin:0;font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(56px,13vw,150px);line-height:.94;letter-spacing:-.02em;color:#DADA7A">YOGAFEST<br>2026</h1>
+    <p style="margin:0;max-width:620px;font-size:clamp(17px,2.2vw,22px);line-height:1.5;font-weight:500;color:#F4E1BB;text-wrap:pretty">იოგას მრავალფეროვანი აქტივობებისა და ფხიზელი გართობის ფესტივალი — ორი დღე ბუნებაში, ლისზე.</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,3vw,40px);align-items:center;font-size:clamp(15px,2vw,19px);font-weight:600;color:#e0cbd6">
+      <span style="color:#DADA7A;font-weight:800;font-size:clamp(19px,2.6vw,26px)">5–6 სექტემბერი 2026</span>
+      <span style="width:8px;height:8px;border-radius:99px;background:#F47C6C"></span>
+      <span>Zion Garden, ლისი · თბილისი</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:6px">
+      <a href="{{ ticketUrl }}" style="display:inline-flex">
+        <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Button" variant="primary" size="lg" sticker="{{ true }}" hint-size="200px,56px">ბილეთის აღება</x-import>
+      </a>
+      <a href="#lead" style="display:inline-flex">
+        <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Button" variant="secondary" size="lg" hint-size="220px,56px">დამირეკეთ / მაცნობეთ</x-import>
+      </a>
+    </div>
+    <div style="display:flex;align-items:center;gap:18px;margin-top:clamp(10px,2vw,22px);opacity:.75">
+      <span style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#c199ac">ორგანიზატორები</span>
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.PartnerLogos" colorway="chartreuse" height="30px" gap="26px" base-path="assets" hint-size="200px,30px"></x-import>
+    </div>
+  </div>
+</section>
+
+<section id="mission" data-screen-label="02 Mission" style="scroll-margin-top:78px;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px);border-top:2px solid rgba(218,218,122,.18);position:relative">
+  <div style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,72px);align-items:start">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#8DD8F8">
+        <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Starburst" color="red" size="16px" base-path="assets" hint-size="16px,16px"></x-import>
+        ჩვენი მისია
+      </div>
+      <h2 style="margin:18px 0 0;font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(32px,5vw,56px);line-height:1.05;letter-spacing:-.01em;color:#DADA7A;text-wrap:balance">გავცვალოთ გართობის სტერეოტიპები.</h2>
+      <p style="margin:24px 0 0;max-width:560px;font-size:clamp(16px,1.9vw,19px);line-height:1.65;color:#F4E1BB;text-wrap:pretty">ჩვენი მისიაა შევქმნათ უსაფრთხო, ალკოჰოლისა და სხვა მათრობელა სუბსტანციებისგან თავისუფალი გარემო, რომელიც ხელს უწყობს ჯანსაღ დასვენებას, აღდგენასა და ადამიანის ნამდვილ კავშირს საკუთარ თავთან, ბუნებასა და სოციუმთან.</p>
+      <p style="margin:16px 0 0;max-width:560px;font-size:clamp(15px,1.8vw,18px);line-height:1.65;color:#c199ac;text-wrap:pretty">ჩვენ ვიცით, რომ ფხიზელი გართობა შესაძლებელია, სრულყოფილია და დამატებით არაჯანსაღ სტიმულებს არ საჭიროებს.</p>
+    </div>
+    <div style="display:grid;gap:16px">
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Card" tone="dark" hint-size="100%,120px">
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <span style="color:#DADA7A;font-size:18px;line-height:1.3">✦</span>
+          <div>
+            <div style="font-weight:800;font-size:19px;color:#DADA7A">უსაფრთხო სივრცე</div>
+            <div style="margin-top:6px;font-size:16px;line-height:1.55;color:#e0cbd6">ალკოჰოლისა და მათრობელა ნივთიერებების გარეშე — ყველასთვის, ვისაც სურს ლაღად იგრძნოს თავი.</div>
+          </div>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Card" tone="dark" hint-size="100%,120px">
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <span style="color:#DADA7A;font-size:18px;line-height:1.3">✦</span>
+          <div>
+            <div style="font-weight:800;font-size:19px;color:#DADA7A">აღდგენა გამოფიტვისგან</div>
+            <div style="margin-top:6px;font-size:16px;line-height:1.55;color:#e0cbd6">სამსახურებრივი და ყოველდღიური წნეხის საპასუხოდ — მოძრაობა, სუფთა ჰაერი და განტვირთვა.</div>
+          </div>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Card" tone="dark" hint-size="100%,120px">
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <span style="color:#DADA7A;font-size:18px;line-height:1.3">✦</span>
+          <div>
+            <div style="font-weight:800;font-size:19px;color:#DADA7A">ჯანსაღი საზოგადოება</div>
+            <div style="margin-top:6px;font-size:16px;line-height:1.55;color:#e0cbd6">მესამე წელია ვქმნით კულტურას, სადაც ერთად ყოფნა სტიმულატორებს არ საჭიროებს.</div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+  </div>
+</section>
+
+<section id="history" data-screen-label="03 History" style="scroll-margin-top:78px;background:#F4E1BB;color:#360522;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px)">
+  <div style="max-width:1080px;margin:0 auto">
+    <div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#F52528">
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Starburst" color="red" size="16px" base-path="assets" hint-size="16px,16px"></x-import>
+      დროის მიმდევრობა
+    </div>
+    <h2 style="margin:16px 0 10px;font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(32px,5vw,56px);line-height:1.05;letter-spacing:-.01em">2015-იდან დღემდე.</h2>
+    <p style="margin:0 0 clamp(36px,5vw,64px);max-width:620px;font-size:clamp(16px,1.9vw,19px);line-height:1.6;color:#612348">ერთდღიანი „იოგა გასვლებიდან" ორდღიან ფხიზელ ფესტივალამდე — თერთმეტი წელი ერთ ხაზზე.</p>
+
+    <div style="position:relative;padding-left:clamp(40px,7vw,84px)">
+      <div style="position:absolute;left:clamp(11px,2vw,25px);top:10px;bottom:10px;width:3px;background:rgba(54,5,34,.18)"></div>
+
+      <article style="position:relative;padding-bottom:clamp(40px,6vw,72px)">
+        <div style="position:absolute;left:calc(clamp(40px,7vw,84px)*-1 + clamp(2px,1.2vw,16px));top:6px;width:22px;height:22px;border-radius:99px;background:#360522;border:4px solid #F4E1BB;box-shadow:0 0 0 3px rgba(54,5,34,.18)"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:clamp(20px,3vw,40px);align-items:center">
+          <div>
+            <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(30px,4.4vw,46px);line-height:1;color:#360522">2015</div>
+            <div style="margin-top:8px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#F52528">დასაწყისი</div>
+            <p style="margin:14px 0 0;font-size:17px;line-height:1.6;color:#4a1233;text-wrap:pretty">ყველაფერი Yoga Rooms-ის ერთდღიანი „იოგა გასვლებით" დაიწყო. ბუნებაში ვარჯიშს დეტოქსი, 24-საათიანი შიმშილი, თამაშები და აქტივობები ემატებოდა. ყოველწლიურად მონაწილეთა რაოდენობა იზრდებოდა.</p>
+          </div>
+          <img src="assets/photos/event-01.jpg" alt="იოგა გასვლა ბუნებაში" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:22px;border:3px solid #360522;box-shadow:6px 6px 0 #360522;display:block">
+        </div>
+      </article>
+
+      <article style="position:relative;padding-bottom:clamp(40px,6vw,72px)">
+        <div style="position:absolute;left:calc(clamp(40px,7vw,84px)*-1 + clamp(2px,1.2vw,16px));top:6px;width:22px;height:22px;border-radius:99px;background:#360522;border:4px solid #F4E1BB;box-shadow:0 0 0 3px rgba(54,5,34,.18)"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:clamp(20px,3vw,40px);align-items:center">
+          <div>
+            <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(30px,4.4vw,46px);line-height:1;color:#360522">2020</div>
+            <div style="margin-top:8px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#F52528">ფხიზელი გართობა</div>
+            <p style="margin:14px 0 0;font-size:17px;line-height:1.6;color:#4a1233;text-wrap:pretty">ამ წლის ყველაზე მასშტაბურ გასვლას მუსიკოსები და DJ-ები შემოუერთდნენ. სწორედ აქ დაიბადა ფხიზელი ცეკვისა და გართობის #SoberRave-ის კონცეფცია.</p>
+          </div>
+          <img src="assets/photos/event-02.jpg" alt="ფხიზელი ცეკვა ბუნებაში" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:22px;border:3px solid #360522;box-shadow:6px 6px 0 #360522;display:block">
+        </div>
+      </article>
+
+      <article style="position:relative;padding-bottom:clamp(40px,6vw,72px)">
+        <div style="position:absolute;left:calc(clamp(40px,7vw,84px)*-1 + clamp(2px,1.2vw,16px));top:6px;width:22px;height:22px;border-radius:99px;background:#360522;border:4px solid #F4E1BB;box-shadow:0 0 0 3px rgba(54,5,34,.18)"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:clamp(20px,3vw,40px);align-items:center">
+          <div>
+            <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(30px,4.4vw,46px);line-height:1;color:#360522">2022</div>
+            <div style="margin-top:8px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#F52528">YogaFest Vol. 1</div>
+            <p style="margin:14px 0 0;font-size:17px;line-height:1.6;color:#4a1233;text-wrap:pretty">პირველი YogaFest ჩავატარეთ და შევქმენით სივრცე, სადაც ფიზიკური აქტივობა, მუსიკა და ფხიზელი გართობა ერთიანდებოდა. გადავწყვიტეთ, ეს გამოცდილება ფართო აუდიტორიისთვისაც გაგვეზიარებინა.</p>
+          </div>
+          <img src="assets/photos/event-03.jpg" alt="YogaFest Vol. 1" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:22px;border:3px solid #360522;box-shadow:6px 6px 0 #360522;display:block">
+        </div>
+      </article>
+
+      <article style="position:relative;padding-bottom:clamp(40px,6vw,72px)">
+        <div style="position:absolute;left:calc(clamp(40px,7vw,84px)*-1 + clamp(2px,1.2vw,16px));top:6px;width:22px;height:22px;border-radius:99px;background:#360522;border:4px solid #F4E1BB;box-shadow:0 0 0 3px rgba(54,5,34,.18)"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:clamp(20px,3vw,40px);align-items:center">
+          <div>
+            <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(30px,4.4vw,46px);line-height:1;color:#360522">2023</div>
+            <div style="margin-top:8px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#F52528">YogaFest Vol. 2</div>
+            <p style="margin:14px 0 0;font-size:17px;line-height:1.6;color:#4a1233;text-wrap:pretty">ლისზე გამართული სამდღიანი YogaFest სრულმასშტაბიან ფესტივალად იქცა. ამ გამოცდილებამ დაგვარწმუნა, რომ მართლაც უნიკალური და ფხიზელი სივრცე შეიქმნა.</p>
+          </div>
+          <img src="assets/photos/event-04.jpg" alt="YogaFest Vol. 2 ლისზე" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:22px;border:3px solid #360522;box-shadow:6px 6px 0 #360522;display:block">
+        </div>
+      </article>
+
+      <article style="position:relative;padding-bottom:clamp(40px,6vw,72px)">
+        <div style="position:absolute;left:calc(clamp(40px,7vw,84px)*-1 + clamp(2px,1.2vw,16px));top:6px;width:22px;height:22px;border-radius:99px;background:#F4E1BB;border:4px solid #360522;box-shadow:0 0 0 3px rgba(54,5,34,.18)"></div>
+        <div style="max-width:620px">
+          <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(30px,4.4vw,46px);line-height:1;color:#9d5f81">2024</div>
+          <div style="margin-top:8px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#9d5f81">პაუზა</div>
+          <p style="margin:14px 0 0;font-size:17px;line-height:1.6;color:#612348;text-wrap:pretty">ქვეყანაში არსებული დაძაბული პოლიტიკური ვითარების გამო ფესტივალი გავაუქმეთ.</p>
+        </div>
+      </article>
+
+      <article style="position:relative;padding-bottom:clamp(40px,6vw,72px)">
+        <div style="position:absolute;left:calc(clamp(40px,7vw,84px)*-1 + clamp(2px,1.2vw,16px));top:6px;width:22px;height:22px;border-radius:99px;background:#360522;border:4px solid #F4E1BB;box-shadow:0 0 0 3px rgba(54,5,34,.18)"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:clamp(20px,3vw,40px);align-items:center">
+          <div>
+            <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(30px,4.4vw,46px);line-height:1;color:#360522">2025</div>
+            <div style="margin-top:8px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#F52528">SoberRave-ის წელი</div>
+            <p style="margin:14px 0 0;font-size:17px;line-height:1.6;color:#4a1233;text-wrap:pretty">ყურადღება უფრო მცირე, დახურულ სივრცეებში გამართულ SoberRave ღონისძიებებზე გადავიტანეთ. ამ გამოცდილებამ ჩვენი კონცეფცია კიდევ უფრო განავითარა.</p>
+          </div>
+          <img src="assets/photos/event-05.jpg" alt="SoberRave ღონისძიება" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:22px;border:3px solid #360522;box-shadow:6px 6px 0 #360522;display:block">
+        </div>
+      </article>
+
+      <article style="position:relative">
+        <div style="position:absolute;left:calc(clamp(40px,7vw,84px)*-1 + clamp(2px,1.2vw,16px));top:6px;width:22px;height:22px;border-radius:99px;background:#F52528;border:4px solid #F4E1BB;box-shadow:0 0 0 3px rgba(245,37,40,.25)"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:clamp(20px,3vw,40px);align-items:center">
+          <div>
+            <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(30px,4.4vw,46px);line-height:1;color:#360522">2026</div>
+            <div style="margin-top:8px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#F52528">YogaFest ბრუნდება</div>
+            <p style="margin:14px 0 0;font-size:17px;line-height:1.6;color:#4a1233;text-wrap:pretty">YogaFest სიფხიზლის ორდღიანი ფესტივალით ბრუნდება — იოგა პრაქტიკებით, მოძრაობით, მუსიკით, აქტივობების მრავალფეროვნებითა და ინტეგრირებული SoberRave-ის გამოცდილებით.</p>
+            <a href="#lead" style="display:inline-flex;margin-top:20px">
+              <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Button" variant="solid" size="md" sticker="{{ true }}" hint-size="180px,48px">ბილეთის აღება</x-import>
+            </a>
+          </div>
+          <img src="assets/photos/event-06.jpg" alt="YogaFest 2026" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:22px;border:3px solid #360522;box-shadow:6px 6px 0 #F52528;display:block">
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="activities" data-screen-label="04 Activities" style="scroll-margin-top:78px;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px);position:relative;overflow:hidden">
+  <div style="max-width:1180px;margin:0 auto;position:relative">
+    <div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#F47C6C">
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Starburst" color="red" size="16px" base-path="assets" hint-size="16px,16px"></x-import>
+      რა დაგხვდება ფესტივალზე
+    </div>
+    <h2 style="margin:16px 0 clamp(32px,4vw,52px);font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(32px,5vw,56px);line-height:1.05;letter-spacing:-.01em;color:#DADA7A">ხუთი სივრცე, ერთი განცდა.</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(18px,2.4vw,28px)">
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Card" tone="dark" hint-size="100%,300px">
+        <img src="assets/illus/practices-chartreuse.png" alt="" aria-hidden="true" style="width:88px;height:88px;object-fit:contain;display:block;margin-bottom:18px">
+        <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:24px;color:#DADA7A">პრაქტიკები</div>
+        <p style="margin:10px 0 0;font-size:16px;line-height:1.6;color:#e0cbd6">მრავალფეროვანი იოგა და მედიტაციის პრაქტიკები სუფთა ჰაერზე — როგორც დამწყებთათვის, ისე გამოცდილი პრაქტიკოსებისთვის.</p>
+      </x-import>
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Card" tone="brand" sticker="{{ true }}" hint-size="100%,300px">
+        <img src="assets/illus/soberrave.png" alt="" aria-hidden="true" style="width:88px;height:88px;object-fit:contain;display:block;margin-bottom:18px">
+        <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:24px;color:#360522">Sober Rave</div>
+        <p style="margin:10px 0 0;font-size:16px;line-height:1.6;color:#4a1233">ცოცხალი, ინსტრუმენტული და ელექტრონული მუსიკის თანხლებით — ცეკვისა და გართობის სრული თავისუფლება სტიმულატორების გარეშე.</p>
+      </x-import>
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Card" tone="dark" hint-size="100%,300px">
+        <img src="assets/illus/cognitive-chartreuse.png" alt="" aria-hidden="true" style="width:88px;height:88px;object-fit:contain;display:block;margin-bottom:18px">
+        <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:24px;color:#DADA7A">შემეცნებითი სივრცე</div>
+        <p style="margin:10px 0 0;font-size:16px;line-height:1.6;color:#e0cbd6">საინტერესო ლექციები და ვორქშოფები გაცნობიერებულ ყოფნაზე, მენტალურ ჯანმრთელობასა და პიროვნულ ზრდაზე.</p>
+      </x-import>
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Card" tone="dark" hint-size="100%,300px">
+        <img src="assets/illus/kids-chartreuse.png" alt="" aria-hidden="true" style="width:88px;height:88px;object-fit:contain;display:block;margin-bottom:18px">
+        <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:24px;color:#DADA7A">საბავშვო სივრცე</div>
+        <p style="margin:10px 0 0;font-size:16px;line-height:1.6;color:#e0cbd6">გასართობ-შემეცნებითი ვორქშოფები და თამაშები ბუნებაში, რაც ფესტივალს იდეალურს ხდის ოჯახებისთვის.</p>
+      </x-import>
+      <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Card" tone="dark" hint-size="100%,300px">
+        <img src="assets/illus/food-chartreuse.png" alt="" aria-hidden="true" style="width:88px;height:88px;object-fit:contain;display:block;margin-bottom:18px">
+        <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:24px;color:#DADA7A">ჯანსაღი კვება</div>
+        <p style="margin:10px 0 0;font-size:16px;line-height:1.6;color:#e0cbd6">სპეციალურად შერჩეული ფუდ-კორტი — ნოყიერი, ჯანსაღი, ვეგეტარიანული და ვეგანური არჩევანი.</p>
+      </x-import>
+      <div style="display:flex;flex-direction:column;justify-content:center;gap:18px;padding:clamp(20px,3vw,32px);border:3px dashed rgba(218,218,122,.35);border-radius:22px">
+        <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:24px;color:#DADA7A;line-height:1.2">ორი დღე. ერთი ბილეთი.</div>
+        <p style="margin:0;font-size:16px;line-height:1.6;color:#e0cbd6">ადგილები შეზღუდულია — დაიტოვე შენი ადგილი ახლავე.</p>
+        <a href="{{ ticketUrl }}" style="display:inline-flex">
+          <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Button" variant="primary" size="md" sticker="{{ true }}" hint-size="170px,48px">ბილეთის აღება</x-import>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="location" data-screen-label="05 Location" style="scroll-margin-top:78px;background:#F4E1BB;color:#360522;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px)">
+  <div style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(28px,4vw,56px);align-items:start">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#F52528">
+        <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Starburst" color="red" size="16px" base-path="assets" hint-size="16px,16px"></x-import>
+        ლოკაცია
+      </div>
+      <h2 style="margin:16px 0 0;font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(32px,5vw,52px);line-height:1.05;letter-spacing:-.01em">Zion Garden, ლისი.</h2>
+      <p style="margin:20px 0 0;max-width:520px;font-size:clamp(16px,1.9vw,19px);line-height:1.65;color:#4a1233;text-wrap:pretty">ფესტივალი ლისის ტბასთან, Zion Garden-ის ფიჭვნარში იმართება — თბილისის ცენტრიდან 20 წუთში, სრულიად სხვა ჰაერში. მოედანზე იოგას სცენები, SoberRave-ის სივრცე, საბავშვო ზონა და ფუდ-კორტი განთავსდება.</p>
+      <div style="margin-top:26px;display:grid;gap:12px;font-size:17px;font-weight:600">
+        <div style="display:flex;gap:12px;align-items:center"><span style="color:#F52528">✦</span>5–6 სექტემბერი 2026, 10:00-იდან</div>
+        <div style="display:flex;gap:12px;align-items:center"><span style="color:#F52528">✦</span>Zion Garden, ლისი, თბილისი</div>
+        <div style="display:flex;gap:12px;align-items:center"><span style="color:#F52528">✦</span>უფასო პარკინგი და ტრანსფერი ცენტრიდან</div>
+      </div>
+      <a href="#lead" style="display:inline-flex;margin-top:28px">
+        <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Button" variant="solid" size="lg" sticker="{{ true }}" hint-size="200px,56px">ბილეთის აღება</x-import>
+      </a>
+    </div>
+    <div style="border:3px solid #360522;border-radius:22px;overflow:hidden;box-shadow:8px 8px 0 #360522;background:#e9dcc2">
+      <div ref="{{ mapRef }}" style="width:100%;height:clamp(300px,46vw,460px)"></div>
+    </div>
+  </div>
+</section>
+
+<section id="lead" data-screen-label="06 Lead capture" style="scroll-margin-top:78px;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px);position:relative;overflow:hidden;border-top:2px solid rgba(218,218,122,.18)">
+  <img src="assets/illustration.png" alt="" aria-hidden="true" style="position:absolute;left:-160px;bottom:-120px;width:640px;opacity:.12;pointer-events:none">
+  <div style="max-width:1180px;margin:0 auto;position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:start">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#F47C6C">
+        <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Starburst" color="red" size="16px" base-path="assets" hint-size="16px,16px"></x-import>
+        შემოგვიერთდი
+      </div>
+      <h2 style="margin:16px 0 0;font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(32px,5vw,56px);line-height:1.05;letter-spacing:-.01em;color:#DADA7A">დაიტოვე ადგილი YogaFest 2026-ზე.</h2>
+      <p style="margin:20px 0 0;max-width:520px;font-size:clamp(16px,1.9vw,19px);line-height:1.65;color:#F4E1BB;text-wrap:pretty">დატოვე კონტაქტი და ბილეთების გაყიდვის დაწყებისთანავე პირველი შეიტყობ — ადრეული ფასით.</p>
+      <div style="margin-top:30px;display:grid;gap:14px;font-size:17px;color:#e0cbd6">
+        <a href="tel:+995599264664" style="display:flex;gap:12px;align-items:center;font-weight:700"><span style="color:#DADA7A">✦</span>+995 599 264 664</a>
+        <a href="mailto:hi@yogafest.ge" style="display:flex;gap:12px;align-items:center;font-weight:700"><span style="color:#DADA7A">✦</span>hi@yogafest.ge</a>
+        <div style="display:flex;gap:12px;align-items:center"><span style="color:#DADA7A">✦</span>Zion Garden, ლისი, თბილისი</div>
+      </div>
+    </div>
+    <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Card" tone="dark" sticker="{{ true }}" padding="clamp(22px,3vw,36px)" hint-size="100%,420px">
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding:20px 0">
+          <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Starburst" color="chartreuse" size="42px" spin="{{ true }}" base-path="assets" hint-size="42px,42px"></x-import>
+          <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:26px;color:#DADA7A">გმადლობთ! მალე დაგიკავშირდებით.</div>
+          <p style="margin:0;font-size:17px;line-height:1.6;color:#e0cbd6">ბილეთების გაყიდვის დაწყებისთანავე მოგწერთ. ამასობაში — გვნახე Instagram-ზე.</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <form onSubmit="{{ onSubmit }}" style="display:grid;gap:16px">
+          <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:22px;color:#DADA7A">დაგვიტოვე კონტაქტი</div>
+          <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c199ac">
+            სახელი
+            <input name="name" type="text" required="required" placeholder="თქვენი სახელი" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(218,218,122,.35);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;text-transform:none;letter-spacing:0" style-focus="border-color:#8DD8F8">
+          </label>
+          <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c199ac">
+            ელფოსტა
+            <input name="email" type="email" required="required" placeholder="you@email.com" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(218,218,122,.35);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;text-transform:none;letter-spacing:0" style-focus="border-color:#8DD8F8">
+          </label>
+          <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c199ac">
+            შეტყობინება
+            <textarea name="message" rows="4" placeholder="რამდენი ბილეთი გაინტერესებთ?" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(218,218,122,.35);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;resize:vertical;text-transform:none;letter-spacing:0" style-focus="border-color:#8DD8F8"></textarea>
+          </label>
+          <button type="submit" style="margin-top:4px;padding:16px 28px;border-radius:999px;border:2px solid #DADA7A;background:#DADA7A;color:#360522;font-family:'Mersad',sans-serif;font-size:18px;font-weight:800;cursor:pointer;box-shadow:4px 4px 0 #360522;transition:transform .18s ease" style-hover="transform:translate(-1px,-1px)" style-active="transform:translate(3px,3px);box-shadow:none">გამომიგზავნეთ ბილეთის ინფო</button>
+          <div style="font-size:14px;line-height:1.5;color:#9d5f81">კონტაქტს მხოლოდ YogaFest-ის სიახლეებისთვის გამოვიყენებთ.</div>
+        </form>
+      </sc-if>
+    </x-import>
+  </div>
+</section>
+
+<footer data-screen-label="07 Footer" style="background:#250216;padding:clamp(48px,6vw,80px) clamp(18px,4vw,40px) 40px;border-top:2px solid rgba(218,218,122,.18)">
+  <div style="max-width:1180px;margin:0 auto;display:grid;gap:clamp(32px,4vw,56px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(24px,3vw,48px);align-items:center;padding:clamp(24px,3vw,40px);border:3px solid rgba(218,218,122,.28);border-radius:22px">
+      <div>
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#F47C6C">პარტნიორობა</div>
+        <div style="margin-top:12px;font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(24px,3vw,34px);line-height:1.15;color:#DADA7A">ააშენე ჯანსაღი კულტურა ჩვენთან ერთად.</div>
+        <p style="margin:12px 0 0;max-width:520px;font-size:16px;line-height:1.6;color:#c199ac">ბრენდებისთვის ვთავაზობთ სასპონსორო და კორპორატიულ პაკეტებს — ბრენდირებული სივრცე, სესიები, კონტენტი და მოსაწვევები გუნდისთვის.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:flex-start">
+        <a href="mailto:hi@yogafest.ge?subject=Partnership" style="display:inline-flex">
+          <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Button" variant="primary" size="md" sticker="{{ true }}" hint-size="170px,48px">გახდი პარტნიორი</x-import>
+        </a>
+        <a href="mailto:hi@yogafest.ge?subject=Sponsorship" style="display:inline-flex">
+          <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Button" variant="secondary" size="md" hint-size="170px,48px">გახდი სპონსორი</x-import>
+        </a>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:clamp(24px,3vw,40px);align-items:start">
+      <div style="display:grid;gap:16px">
+        <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.Logo" mark="badge" colorway="chartreuse" height="96px" base-path="assets" hint-size="96px,96px"></x-import>
+        <div style="font-size:15px;line-height:1.6;color:#9d5f81">5–6 სექტემბერი 2026<br>Zion Garden, ლისი, თბილისი</div>
+      </div>
+      <div style="display:grid;gap:10px;font-size:16px">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:#c199ac">კონტაქტი</div>
+        <a href="tel:+995599264664">+995 599 264 664</a>
+        <a href="mailto:hi@yogafest.ge">hi@yogafest.ge</a>
+        <a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
+        <a href="https://facebook.com" target="_blank" rel="noreferrer">Facebook</a>
+      </div>
+      <div style="display:grid;gap:10px;font-size:16px">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:#c199ac">ნავიგაცია</div>
+        <a href="#mission">მისია</a>
+        <a href="#history">ისტორია</a>
+        <a href="#activities">აქტივობები</a>
+        <a href="#location">ლოკაცია</a>
+        <a href="#lead">ბილეთები</a>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:#c199ac">ორგანიზატორები</div>
+        <x-import component-from-global-scope="YogaFest2026DesignSystem_9dbc18.PartnerLogos" colorway="chartreuse" height="34px" gap="24px" base-path="assets" hint-size="200px,34px"></x-import>
+      </div>
+    </div>
+
+    <div style="border-top:2px solid rgba(218,218,122,.15);padding-top:22px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;font-size:14px;color:#7c3a61">
+      <span>© 2026 YogaFest · Yoga Rooms × Zion Garden</span>
+      <span>Move together. Rise sober.</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;ticketUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;#lead&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Tickets&quot;}}">
+class Component extends DCLogic {
+  state = { sent: false };
+
+  componentDidMount() {
+    this.initMap();
+  }
+
+  initMap(tries = 0) {
+    const el = this.mapEl;
+    if (!el || !window.L) {
+      if (tries < 80) setTimeout(() => this.initMap(tries + 1), 150);
+      return;
+    }
+    if (this._map) return;
+    const coords = [41.75455, 44.72565];
+    const map = window.L.map(el, { scrollWheelZoom: false, attributionControl: true }).setView(coords, 15);
+    this._map = map;
+    window.L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+    const icon = window.L.divIcon({
+      className: '',
+      iconSize: [34, 34],
+      iconAnchor: [17, 17],
+      html: '<div style="width:34px;height:34px;border-radius:99px;background:#F52528;border:4px solid #F4E1BB;box-shadow:0 0 0 4px rgba(54,5,34,.45)"></div>'
+    });
+    window.L.marker(coords, { icon })
+      .addTo(map)
+      .bindTooltip('Zion Garden, ლისი', {
+        permanent: true,
+        direction: 'top',
+        offset: [0, -18],
+        className: 'yf-tip'
+      });
+    const style = document.createElement('style');
+    style.textContent = '.yf-tip{background:#360522;color:#DADA7A;border:2px solid #DADA7A;border-radius:999px;padding:5px 12px;font-weight:700;font-size:13px;box-shadow:none}.yf-tip::before{display:none}';
+    document.head.appendChild(style);
+    setTimeout(() => map.invalidateSize(), 300);
+  }
+
+  renderVals() {
+    return {
+      sent: this.state.sent,
+      ticketUrl: this.props.ticketUrl ?? '#lead',
+      notSent: !this.state.sent,
+      mapRef: (el) => { this.mapEl = el; this.initMap(); },
+      onSubmit: (e) => {
+        e.preventDefault();
+        this.setState({ sent: true });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
