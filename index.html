@@ -246,7 +246,7 @@
             <div style="margin-top:8px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#F52528">ფხიზელი გართობა</div>
             <p style="margin:14px 0 0;font-size:17px;line-height:1.6;color:#4a1233;text-wrap:pretty">ამ წლის ყველაზე მასშტაბურ გასვლას მუსიკოსები და DJ-ები შემოუერთდნენ. სწორედ აქ დაიბადა ფხიზელი ცეკვისა და გართობის #SoberRave-ის კონცეფცია.</p>
           </div>
-          <video id="video-2020" src="Timeline photos/2020.mp4" controls muted loop preload="none" playsinline style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:22px;border:3px solid #360522;box-shadow:6px 6px 0 #360522;display:block;background:#000"></video>
+          <iframe src="https://www.youtube-nocookie.com/embed/jrHr-OovhlI" title="YogaFest — 2020" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;aspect-ratio:4/3;border-radius:22px;border:3px solid #360522;box-shadow:6px 6px 0 #360522;display:block;background:#000"></iframe>
         </div>
       </article>
 
@@ -608,28 +608,6 @@
       form.style.display = 'none';
       success.style.display = 'flex';
     });
-  })();
-
-  // --- 2020 timeline video: only fetch/play once scrolled into view (file is ~39MB) ---
-  (function () {
-    var video = document.getElementById('video-2020');
-    if (!video || !('IntersectionObserver' in window)) return;
-    var started = false;
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          if (!started) {
-            started = true;
-            video.preload = 'auto';
-            video.autoplay = true;
-          }
-          video.play().catch(function () {});
-        } else {
-          video.pause();
-        }
-      });
-    }, { threshold: 0.4 });
-    observer.observe(video);
   })();
 
   // --- Location map (Leaflet) ---
