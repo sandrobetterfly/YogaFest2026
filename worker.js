@@ -1,11 +1,16 @@
-// Cloudflare Pages Function — POST /api/lead
+// Cloudflare Worker (with static assets) — entry point for yogafest2026.
 //
-// Receives the "დაგვიტოვე კონტაქტი" lead form, validates + sanitizes it,
-// runs lightweight spam checks, and emails a notification to hi@yogafest.ge
-// via Zoho SMTP.
+// Routing:
+//   POST /api/lead   -> handleLead() below (same logic as the old Pages Function)
+//   *    /api/lead    (any other method) -> 405
+//   everything else  -> served as a static asset via env.ASSETS.fetch()
 //
-// Required environment variables (set as Cloudflare Pages "Secrets", never
-// committed to the repo — see README-lead-form.md for details):
+// This does not change the site's layout or the lead form's frontend
+// behavior at all — index.html already POSTs to the relative path
+// "/api/lead", which resolves identically here as it did under Pages.
+//
+// Required environment variables (set as Worker "Secrets", never committed
+// to the repo — see README-lead-form.md for details):
 //   ZOHO_SMTP_USER    Zoho mailbox used to authenticate + send (e.g. hi@yogafest.ge)
 //   ZOHO_SMTP_PASS    Zoho application-specific password for that mailbox
 // Optional:
@@ -24,9 +29,24 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Bots that fill + submit instantly are almost always spam.
 const MIN_FILL_SECONDS = 2;
 
-export async function onRequestPost(context) {
-  const { request, env } = context;
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
 
+    if (url.pathname === '/api/lead') {
+      if (request.method === 'POST') {
+        return handleLead(request, env);
+      }
+      // Reject anything that isn't a POST (GET/PUT/etc. on this route).
+      return json({ ok: false, error: 'method_not_allowed' }, 405);
+    }
+
+    // Everything else (index.html, images, etc.) is a static asset.
+    return env.ASSETS.fetch(request);
+  },
+};
+
+async function handleLead(request, env) {
   let body;
   try {
     body = await request.json();
@@ -103,11 +123,6 @@ export async function onRequestPost(context) {
   }
 
   return json({ ok: true }, 200);
-}
-
-// Reject anything that isn't a POST (GET/PUT/etc. on this route).
-export async function onRequestGet() {
-  return json({ ok: false, error: 'method_not_allowed' }, 405);
 }
 
 // ---------- helpers ----------

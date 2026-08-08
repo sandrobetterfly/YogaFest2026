@@ -1,7 +1,7 @@
 {
   "name": "yogafest-2026-site",
   "private": true,
-  "description": "YogaFest 2026 static site + Cloudflare Pages Function for the lead form.",
+  "description": "YogaFest 2026 static site, served by a Cloudflare Worker with static assets; worker.js also handles the lead form's /api/lead route.",
   "dependencies": {
     "worker-mailer": "^1.2.1"
   }

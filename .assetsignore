@@ -1,0 +1,21 @@
+# Cloudflare Workers static assets — files listed here are never uploaded
+# or servable as public assets, even though they live in the assets
+# directory ("." — the repo root). Gitignore-compatible syntax.
+#
+# Only excludes dev/build/config files. Everything the site actually needs
+# (index.html, CSS/JS inside it, fonts, images under Visial Elements/,
+# Timeline photos/, Organizors logo/, etc.) is deliberately left alone.
+
+worker.js
+wrangler.toml
+package.json
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+README*.md
+HANDOFF.md
+.assetsignore
+.git*
+.DS_Store
+node_modules/
+.originals-backup/
