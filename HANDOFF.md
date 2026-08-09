@@ -3,7 +3,7 @@
 **Repo:** [github.com/sandrobetterfly/YogaFest2026](https://github.com/sandrobetterfly/YogaFest2026) (public, `main` branch)
 **Live stack:** Cloudflare Worker with static assets, project `yogafest2026` (not Pages — see §2)
 **Language:** Georgian (ka), single-page site
-**Last updated:** 2026-08-08
+**Last updated:** 2026-08-09
 
 ---
 
@@ -86,7 +86,7 @@ in case they're wanted later): `Visial Elements/Bird01.png` (superseded by
 |---|---|---|
 | — | `<header>` | Sticky nav — wordmark logo, jump links, "ბილეთები" button; collapses to a hamburger menu ≤760px |
 | 1 | `#top` (Hero) | Full-bleed cover photo, "Sober Rave" eyebrow, big "YOGAFEST 2026" `<h1>`, subtitle, date/venue, single ticket CTA |
-| 2 | `#mission` | "ჩვენი მისია" mission statement, 3 cards (პრობლემა / გარემო / შესაძლებლობა — problem/environment/opportunity), full-bleed brand illustration bridging into the next section |
+| 2 | `#mission` | "ჩვენი მისია" mission statement, 3 cards (გარემო / პრობლემა / შესაძლებლობა — environment/problem/opportunity), full-bleed brand illustration bridging into the next section |
 | 3 | `#history` | Green-background timeline, 2015 → 2026, one entry per year with a photo (or the 2020 YouTube embed, or no image for the 2024 "paused" year) |
 | 4 | `#activities` | "ხუთი სივრცე" — 5 cards (practices, Sober Rave, talks, kids' space, food) each with a corner illustration, plus a dashed ticket-CTA card |
 | 5 | `#location` | Zion Garden description, parking/map info, live Leaflet map with a custom branded pin, "ლოკაცია" CTA linking to Google Maps |
@@ -153,10 +153,15 @@ on the same URL.
   gitignored). Total delivered image weight went from ~31MB to ~5MB.
 - The 2020 timeline video was a 39.2MB local file that broke Cloudflare's
   25MiB per-asset limit — replaced with a YouTube embed
-  (`youtube-nocookie.com/embed/jrHr-OovhlI`), autoplaying muted+looped,
-  lazy-loaded. The original file is `.gitignore`'d, not deployed.
-- `loading="lazy"` + `decoding="async"` on every below-the-fold image; the
-  hero photo uses `fetchpriority="high"` (it's the page's LCP element).
+  (`youtube-nocookie.com/embed/jrHr-OovhlI`), autoplaying muted+looped.
+  The original file is `.gitignore`'d, not deployed. It was initially
+  lazy-loaded (`loading="lazy"`, only starting once scrolled into view);
+  later changed to load and autoplay immediately on page load instead
+  (explicit request — trades a little initial-load weight for the video
+  always being playing by the time a visitor reaches it).
+- `loading="lazy"` + `decoding="async"` on every other below-the-fold
+  image; the hero photo uses `fetchpriority="high"` (it's the page's LCP
+  element).
 - Leaflet's JS is `defer`red so it doesn't block initial render.
 
 ## 8. Known open items / not done
@@ -251,3 +256,8 @@ on the same URL.
     Tested the deployed Apps Script endpoint directly with `curl` (GET
     health check + POST) before wiring it in. `index.html` again needed
     no changes.
+17. Small follow-up polish: swapped the mission section's card order
+    (გარემო now before პრობლემა), rewrote the lead-form thank-you
+    message to drop the ticket-sales framing in favor of "our team will
+    be in touch soon," and made the 2020 timeline video autoplay
+    immediately on page load instead of waiting until scrolled into view.

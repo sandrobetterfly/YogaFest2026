@@ -509,28 +509,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="card card-green card-sticker" style="position:relative;z-index:1;max-width:480px;width:100%;padding:clamp(22px,3vw,36px);max-height:90vh;overflow-y:auto">
     <button id="partner-modal-close" type="button" aria-label="დახურვა" style="position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:2px solid rgba(54,5,34,.35);background:transparent;color:#360522;font-size:16px;line-height:1;cursor:pointer">✕</button>
 
-    <div id="partner-modal-success" style="display:none;flex-direction:column;align-items:flex-start;gap:16px;padding:20px 0">
-      <svg class="sb sb-spin" width="42" height="42" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 0l2.4 7.3L22 9.7l-7.6 2.5L12 22l-2.4-7.8L2 11.7l7.6-2.4L12 0z" fill="#360522"/></svg>
-      <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:26px;color:#360522">გმადლობთ!</div>
-      <p style="margin:0;font-size:17px;line-height:1.6;color:#4a1233">თქვენი ელფოსტის აპლიკაცია იხსნება შეტყობინების გასაგზავნად hi@yogafest.ge-ზე.</p>
+    <div id="partner-modal-title" style="font-family:'Mersad',sans-serif;font-weight:800;font-size:22px;color:#360522;padding-right:30px">გახდი პარტნიორი</div>
+    <p style="margin:12px 0 18px;font-size:16px;line-height:1.6;color:#4a1233">დაგვირეკეთ ან მოგვწერეთ:</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px 24px;padding:14px 16px;border-radius:14px;border:2px solid rgba(54,5,34,.25)">
+      <a href="tel:+995599264664" style="color:#360522;font-weight:700;font-size:16px;text-decoration:none">📞 +995 599 264 664</a>
+      <a href="mailto:hi@yogafest.ge" style="display:inline-flex;align-items:center;gap:6px;color:#360522;font-weight:700;font-size:16px;text-decoration:none">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3" fill="#F5C518"/><path d="M3 5.5l9 6.8 9-6.8" stroke="#360522" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        hi@yogafest.ge
+      </a>
     </div>
-
-    <form id="partner-modal-form" style="display:grid;gap:16px">
-      <div id="partner-modal-title" style="font-family:'Mersad',sans-serif;font-weight:800;font-size:22px;color:#360522;padding-right:30px">დაგვიტოვე კონტაქტი</div>
-      <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#612348">
-        სახელი
-        <input name="name" type="text" required placeholder="თქვენი სახელი" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(54,5,34,.3);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;text-transform:none;letter-spacing:0">
-      </label>
-      <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#612348">
-        ელფოსტა
-        <input name="email" type="email" required placeholder="you@email.com" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(54,5,34,.3);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;text-transform:none;letter-spacing:0">
-      </label>
-      <label style="display:grid;gap:7px;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#612348">
-        შეტყობინება
-        <textarea name="message" rows="4" placeholder="მოგვიყევი შენს ბრენდზე და თანამშრომლობის იდეაზე" style="padding:14px 16px;border-radius:14px;border:2px solid rgba(54,5,34,.3);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;resize:vertical;text-transform:none;letter-spacing:0"></textarea>
-      </label>
-      <button type="submit" class="btn btn-solid" style="margin-top:4px;padding:16px 28px;font-size:18px;border-radius:999px">გაგზავნა</button>
-    </form>
   </div>
 </div>
 
@@ -638,14 +625,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
   })();
 
-  // --- Partnership modal (opens same form as lead capture, sends to hi@yogafest.ge) ---
+  // --- Partnership modal (shows direct contact details — phone + email) ---
   (function () {
     var modal = document.getElementById('partner-modal');
     var backdrop = document.getElementById('partner-modal-backdrop');
     var closeBtn = document.getElementById('partner-modal-close');
     var openBtn = document.getElementById('partner-cta');
-    var form = document.getElementById('partner-modal-form');
-    var success = document.getElementById('partner-modal-success');
     var lastFocused = null;
 
     function openModal() {
@@ -665,18 +650,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     closeBtn.addEventListener('click', closeModal);
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && modal.style.display === 'flex') closeModal();
-    });
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var name = form.name.value;
-      var email = form.email.value;
-      var message = form.message.value;
-      var body = 'სახელი: ' + name + '\nელფოსტა: ' + email + '\n\n' + message;
-      var mailto = 'mailto:hi@yogafest.ge?subject=' + encodeURIComponent('პარტნიორობა — YogaFest 2026') + '&body=' + encodeURIComponent(body);
-      window.location.href = mailto;
-      form.style.display = 'none';
-      success.style.display = 'flex';
     });
   })();
 
