@@ -15,7 +15,7 @@ Lisi Lake, Tbilisi. Organized by Yoga Rooms × Zion Garden.
 
 The site's job: communicate the event, show the festival's history/credibility,
 list what's on, show the venue on a map, and capture leads (ticket-interest
-contacts + potential sponsors/partners) via forms that email the organizers.
+contacts + potential sponsors/partners) via forms.
 
 ## 2. Tech stack & architecture
 
@@ -27,15 +27,16 @@ contacts + potential sponsors/partners) via forms that email the organizers.
 - **Backend:** the project is a **Cloudflare Worker with static assets**
   (`yogafest2026`) — not Cloudflare Pages. `worker.js` is the single entry
   point: it routes `POST /api/lead` to the lead-form handler (validation,
-  spam checks, **Zoho SMTP** send) and falls through to
+  spam checks, forwards to a **Google Apps Script Web App** that appends
+  the lead to a **Google Sheet**) and falls through to
   `env.ASSETS.fetch(request)` (serving `index.html` and every other file)
   for everything else. `wrangler.toml`'s `run_worker_first = ["/api/*"]`
   guarantees `/api/*` always runs `worker.js` rather than being served as
-  a static file.
+  a static file. No email is sent anywhere in this project (an earlier
+  Zoho SMTP notification was replaced by the Sheet — see §6).
 - **Hosting/deploy:** Cloudflare Workers, connected to this GitHub repo.
   Deploy with `npx wrangler deploy` (see `wrangler.toml` for the project
-  name, entry point, assets directory, and the `nodejs_compat` compatibility
-  flag the email library needs).
+  name, entry point, and assets directory).
 - **Third-party services embedded:** Leaflet + OpenStreetMap (location map),
   Google Fonts (Noto Sans Georgian, loaded as a fallback alongside the
   primary `Mersad` font), a YouTube embed (2020 timeline video), Google Tag
@@ -47,13 +48,17 @@ contacts + potential sponsors/partners) via forms that email the organizers.
 ```
 index.html                        the entire site (markup + CSS + JS)
 worker.js                         Worker entry point — routes POST /api/lead to the lead-form
-                                   handler (Zoho SMTP), everything else -> env.ASSETS.fetch()
+                                   handler (forwards to Google Apps Script -> Google Sheet),
+                                   everything else -> env.ASSETS.fetch()
+google-apps-script/Code.gs        source for the Google Apps Script Web App that appends leads
+                                   to a Google Sheet — deployed manually via script.google.com,
+                                   not by this repo (see README-lead-form.md)
 wrangler.toml                     Cloudflare Worker config (project name, entry point, assets
                                    binding, compat flags)
 .assetsignore                     keeps dev/config files (worker.js, wrangler.toml, package.json,
                                    lockfiles, README*.md, HANDOFF.md, .git*) out of the publicly
                                    served static assets — gitignore syntax
-package.json                      one dependency: worker-mailer (SMTP client for Workers)
+package.json                      no dependencies — worker.js uses only standard fetch()
 README-lead-form.md               setup guide: required env vars, spam protection, etc.
 .gitignore                        excludes .DS_Store, node_modules/, local backups, the
                                    uncompressed 2020 video (see §7)
@@ -119,24 +124,27 @@ look) and `.card` (+ `.card-dark` / `.card-brand` / `.card-green`,
 `worker.js` (`POST /api/lead` route, part of the `yogafest2026` Worker):
 
 - Validates + sanitizes name/email/message (length caps, email format,
-  strips newlines to block header injection, HTML-escapes before embedding
-  in the notification email)
+  strips newlines to block header injection)
 - Spam defense: a honeypot field (`company`, invisible to real users) + a
   time-trap (rejects submissions completed in <2s) + an optional reCAPTCHA
   hook that only activates if `RECAPTCHA_SECRET` is set
-- Sends the notification to **hi@yogafest.ge** via **Zoho SMTP**
-  (`smtp.zoho.com:465`) using the `worker-mailer` library — the only SMTP
-  client that works from Cloudflare's edge runtime — with `reply-to` set to
-  the visitor's own email so replying goes straight to them
+- Forwards the clean data server-to-server (plain `fetch()`, no library
+  needed) to a **Google Apps Script Web App**
+  (`google-apps-script/Code.gs`), which appends it as a row in a **Google
+  Sheet** — timestamp, name, email, message. **No email is sent anywhere**;
+  this replaced an earlier Zoho SMTP notification.
 - Returns clean JSON; the frontend (`index.html`) shows a disabled/"იგზავნება…"
   state while sending, the existing thank-you panel on success, or a red
   inline error message (specific per failure type) without breaking layout
 
-**Required before this works in production** — two Worker Secrets (set via
-`npx wrangler secret put <NAME>` or the dashboard, never in the repo):
-`ZOHO_SMTP_USER` (the sending mailbox) and `ZOHO_SMTP_PASS` (a Zoho
-app-specific password, not the account password). Until these are set, the
-form fails gracefully with a "temporary technical issue" message.
+**Required before this works in production** — one Worker Secret (set via
+`npx wrangler secret put GAS_WEB_APP_URL` or the dashboard, never in the
+repo): the deployed Apps Script Web App URL. Until it's set, the form
+fails gracefully with a "temporary technical issue" message. The Apps
+Script side is deployed manually (not via this repo/git) — see
+[README-lead-form.md](README-lead-form.md) for the steps, and remember
+that editing `Code.gs` requires a **new deployment version** to go live
+on the same URL.
 
 ## 7. Performance work
 
@@ -160,10 +168,11 @@ form fails gracefully with a "temporary technical issue" message.
   pattern could be reused (another route branch in `worker.js`, or a `type`
   field on the existing one) if you want it to send silently like the lead
   form does.
-- **Worker secrets** (`ZOHO_SMTP_USER`/`ZOHO_SMTP_PASS`) need to be set via
-  `npx wrangler secret put <NAME>` (or the dashboard) for the lead form to
-  actually send email — not something committable to the repo, must be done
-  by whoever owns the Cloudflare account.
+- **Worker secret** (`GAS_WEB_APP_URL`) needs to be set via
+  `npx wrangler secret put GAS_WEB_APP_URL` (or the dashboard) for the lead
+  form to actually write to the Sheet — not something committable to the
+  repo, must be done by whoever owns the Cloudflare account. The Apps
+  Script Web App itself also needs to be deployed once (see §6 / README).
 - **Dashboard deploy command**: if it's still set to the Pages-specific
   `npx wrangler pages deploy . --project-name yogafest2026` (from when this
   was briefly configured as a Pages project), change it back to plain
@@ -181,10 +190,15 @@ form fails gracefully with a "temporary technical issue" message.
 
 - This is a static file — open `index.html` directly, or serve it with
   anything (`python3 -m http.server`, etc.) for basic layout work.
-- **The lead form will not work under a plain static server.**
-  `worker-mailer` depends on `cloudflare:sockets`, which only exists inside
-  the actual Cloudflare Workers runtime. Test the whole thing (routing +
-  static assets + email) with `npx wrangler dev`.
+- `worker.js` itself now only uses standard `fetch()` (no Cloudflare-only
+  APIs), since email/SMTP was dropped — but static-asset serving via
+  `env.ASSETS` still only exists inside the real Workers runtime. Test the
+  whole thing (routing + static assets + the Sheet write) with
+  `npx wrangler dev`.
+- The Apps Script endpoint itself can be smoke-tested directly with `curl`
+  (`GET` the `/exec` URL for a `{"ok":true,...}` health check, or `POST`
+  JSON `{name,email,message}` to it) independent of the Worker — useful for
+  isolating "is the Sheet write broken" from "is the Worker broken."
 - YouTube embeds (the 2020 video) don't load correctly from a `file://` URL
   in some browsers — serve over `http://localhost` if testing that section.
 
@@ -204,10 +218,9 @@ form fails gracefully with a "temporary technical issue" message.
    swapped to a YouTube embed), changed section background to brand green.
 6. Location: corrected map coordinates (resolved from a Google Maps share
    link), custom branded map pin, rewritten copy, real map-linking CTA.
-7. Lead form: copy updates, then a full real backend (originally a
-   Cloudflare Pages Function, later migrated to a Cloudflare Worker with
-   static assets — see item 15 — Zoho SMTP, validation, spam protection,
-   see §6).
+7. Lead form: copy updates, then a full real backend — Cloudflare Pages
+   Function → Cloudflare Worker (item 15) → Google Sheet via Apps Script
+   (item 16), always with the same validation/spam protection, see §6.
 8. Footer: partnership pitch card with bird illustration and a modal-based
    contact flow (green modal card, brown CTA), real organizer logos
    (one recolored to white), real social links.
@@ -224,8 +237,17 @@ form fails gracefully with a "temporary technical issue" message.
 15. Migrated the backend off Cloudflare Pages: the real Cloudflare project
     (`yogafest2026`) turned out to be a Worker with static assets, not
     Pages. Converted `functions/api/lead.js` into `worker.js` (routes
-    `/api/lead` to the same validation/spam/Zoho-send logic, everything
-    else falls through to `env.ASSETS.fetch()`), rewrote `wrangler.toml`
-    for that model (`main`, `[assets]` binding, `run_worker_first`), and
-    updated the docs accordingly. `index.html` needed no changes — it
-    already called the relative `/api/lead` path.
+    `/api/lead` to the same validation/spam/send logic, everything else
+    falls through to `env.ASSETS.fetch()`), rewrote `wrangler.toml` for
+    that model (`main`, `[assets]` binding, `run_worker_first`), added
+    `.assetsignore`, enabled Workers observability, and updated the docs
+    accordingly. `index.html` needed no changes — it already called the
+    relative `/api/lead` path.
+16. Replaced the Zoho SMTP email notification with a direct Google Sheet
+    write: added `google-apps-script/Code.gs` (a Web App that appends
+    each lead as a row), rewrote `worker.js` to forward validated/spam-
+    checked submissions to it via plain `fetch()` instead of sending
+    email, dropped the now-unused `worker-mailer` dependency entirely.
+    Tested the deployed Apps Script endpoint directly with `curl` (GET
+    health check + POST) before wiring it in. `index.html` again needed
+    no changes.

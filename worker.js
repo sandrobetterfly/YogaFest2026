@@ -1,27 +1,25 @@
 // Cloudflare Worker (with static assets) — entry point for yogafest2026.
 //
 // Routing:
-//   POST /api/lead   -> handleLead() below (same logic as the old Pages Function)
+//   POST /api/lead   -> handleLead() below
 //   *    /api/lead    (any other method) -> 405
 //   everything else  -> served as a static asset via env.ASSETS.fetch()
 //
 // This does not change the site's layout or the lead form's frontend
 // behavior at all — index.html already POSTs to the relative path
-// "/api/lead", which resolves identically here as it did under Pages.
+// "/api/lead", which resolves identically here as it did before.
 //
-// Required environment variables (set as Worker "Secrets", never committed
+// Leads are appended to a Google Sheet via a Google Apps Script Web App
+// (see google-apps-script/Code.gs) — no email notification is sent.
+//
+// Required environment variable (set as a Worker "Secret", never committed
 // to the repo — see README-lead-form.md for details):
-//   ZOHO_SMTP_USER    Zoho mailbox used to authenticate + send (e.g. hi@yogafest.ge)
-//   ZOHO_SMTP_PASS    Zoho application-specific password for that mailbox
+//   GAS_WEB_APP_URL   The deployed Google Apps Script Web App URL
+//                      (https://script.google.com/macros/s/.../exec)
 // Optional:
-//   LEAD_NOTIFY_TO    Notification recipient (defaults to hi@yogafest.ge)
 //   RECAPTCHA_SECRET  Google reCAPTCHA v3/v2 secret — if set, server verifies
 //                      the token the frontend sends; if unset, this check is
 //                      skipped entirely (no placeholder keys are faked here).
-
-import { WorkerMailer } from 'worker-mailer';
-
-const DEFAULT_NOTIFY_TO = 'hi@yogafest.ge';
 
 const MAX_LEN = { name: 100, email: 200, message: 3000, honeypot: 200 };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -56,7 +54,7 @@ async function handleLead(request, env) {
 
   // --- Honeypot: real visitors never see/fill this field (hidden via CSS). ---
   // Bots that auto-fill every input will trip it. Respond as if it succeeded
-  // so the bot gets no signal that it was caught, but skip sending mail.
+  // so the bot gets no signal that it was caught, but skip writing the row.
   const honeypot = clean(body.company, MAX_LEN.honeypot);
   if (honeypot) {
     return json({ ok: true }, 200);
@@ -89,43 +87,48 @@ async function handleLead(request, env) {
     return json({ ok: false, error: 'invalid_fields' }, 400);
   }
 
-  if (!env.ZOHO_SMTP_USER || !env.ZOHO_SMTP_PASS) {
-    console.error('lead form: missing ZOHO_SMTP_USER / ZOHO_SMTP_PASS env vars');
+  if (!env.GAS_WEB_APP_URL) {
+    console.error('lead form: missing GAS_WEB_APP_URL env var');
     return json({ ok: false, error: 'server_not_configured' }, 500);
   }
 
-  const notifyTo = env.LEAD_NOTIFY_TO || DEFAULT_NOTIFY_TO;
-
   try {
-    await WorkerMailer.send(
-      {
-        host: 'smtppro.zoho.com',
-        port: 465,
-        secure: true,
-        credentials: {
-          username: env.ZOHO_SMTP_USER,
-          password: env.ZOHO_SMTP_PASS,
-        },
-        authType: 'plain',
-      },
-      {
-        from: { name: 'YogaFest 2026 — ვებგვერდი', email: env.ZOHO_SMTP_USER },
-        to: { email: notifyTo },
-        reply: { name, email }, // lets hi@yogafest.ge hit "reply" straight to the lead
-        subject: `ბილეთის მოთხოვნა — ${name}`,
-        text: plainTextBody({ name, email, message }),
-        html: htmlBody({ name, email, message }),
-      },
-    );
+    const resp = await fetch(env.GAS_WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, message }),
+    });
+
+    if (!resp.ok) {
+      const text = await resp.text().catch(() => '');
+      console.error('lead form: Google Sheet write failed', {
+        status: resp.status,
+        body: redact(text, [env.GAS_WEB_APP_URL]).slice(0, 500),
+      });
+      return json({ ok: false, error: 'send_failed' }, 502);
+    }
+
+    // Apps Script's doPost() returns { ok: true/false, ... } as JSON — surface
+    // an explicit ok:false from the script itself as a failure too.
+    let result = null;
+    try {
+      result = await resp.json();
+    } catch {
+      // Non-JSON 200 response — treat as success; the row write already
+      // happened before Apps Script formats its reply.
+    }
+    if (result && result.ok === false) {
+      console.error('lead form: Apps Script reported failure', result);
+      return json({ ok: false, error: 'send_failed' }, 502);
+    }
   } catch (err) {
     // Diagnostic only: goes to Cloudflare Workers Logs (console.error / Live
-    // Logs), never to the client. The public response below stays generic —
-    // no SMTP error text, credentials, or stack trace ever reach the browser.
-    // Message is scrubbed in case the SMTP client ever echoes the
-    // credentials back in an error string (e.g. an auth-failure response).
-    console.error('lead form: email send failed', {
+    // Logs), never to the client. The public response below stays generic.
+    // Message is scrubbed in case the URL (treated as sensitive, since it's
+    // an unauthenticated write endpoint) ever appears in an error string.
+    console.error('lead form: Google Sheet write failed', {
       name: err && err.name,
-      message: redact(err && err.message, [env.ZOHO_SMTP_USER, env.ZOHO_SMTP_PASS]),
+      message: redact(err && err.message, [env.GAS_WEB_APP_URL]),
     });
     return json({ ok: false, error: 'send_failed' }, 502);
   }
@@ -136,7 +139,7 @@ async function handleLead(request, env) {
 // ---------- helpers ----------
 
 // Strips any of the given secret values out of a string before it's logged,
-// in case an SMTP client ever echoes credentials back inside an error message.
+// in case an error message ever echoes the Apps Script URL back verbatim.
 function redact(text, secrets) {
   if (typeof text !== 'string') return text;
   let out = text;
@@ -152,34 +155,6 @@ function clean(value, maxLen) {
     .replace(/[\r\n]+/g, ' ') // no header/line injection in single-line fields
     .trim()
     .slice(0, maxLen);
-}
-
-function escapeHtml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function plainTextBody({ name, email, message }) {
-  return [
-    `სახელი: ${name}`,
-    `ელფოსტა: ${email}`,
-    '',
-    message || '(შეტყობინება არ დაწერილა)',
-  ].join('\n');
-}
-
-function htmlBody({ name, email, message }) {
-  return `
-    <div style="font-family:sans-serif;font-size:15px;line-height:1.6;color:#222">
-      <p><strong>სახელი:</strong> ${escapeHtml(name)}</p>
-      <p><strong>ელფოსტა:</strong> ${escapeHtml(email)}</p>
-      <p><strong>შეტყობინება:</strong><br>${escapeHtml(message || '(შეტყობინება არ დაწერილა)').replace(/\n/g, '<br>')}</p>
-    </div>
-  `;
 }
 
 async function verifyRecaptcha(token, secret, request) {
