@@ -3,7 +3,7 @@
 **Repo:** [github.com/sandrobetterfly/YogaFest2026](https://github.com/sandrobetterfly/YogaFest2026) (public, `main` branch)
 **Live stack:** Cloudflare Worker with static assets, project `yogafest2026` (not Pages — see §2)
 **Language:** Georgian (ka), single-page site
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-11
 
 ---
 
@@ -84,7 +84,7 @@ in case they're wanted later): `Visial Elements/Bird01.png` (superseded by
 
 | # | Section (`id`) | Content |
 |---|---|---|
-| — | `<header>` | Sticky nav — wordmark logo, jump links, "ბილეთები" button; collapses to a hamburger menu ≤760px |
+| — | `<header>` | Sticky nav — wordmark logo, jump links, "ბილეთები" button (placeholder — see §8); collapses to a hamburger menu ≤760px |
 | 1 | `#top` (Hero) | Full-bleed cover photo, "Sober Rave" eyebrow, big "YOGAFEST 2026" `<h1>`, subtitle, date/venue, single ticket CTA |
 | 2 | `#mission` | "ჩვენი მისია" mission statement, 3 cards (გარემო / პრობლემა / შესაძლებლობა — environment/problem/opportunity), full-bleed brand illustration bridging into the next section |
 | 3 | `#history` | Green-background timeline, 2015 → 2026, one entry per year with a photo (or the 2020 YouTube embed, or no image for the 2024 "paused" year) |
@@ -92,7 +92,7 @@ in case they're wanted later): `Visial Elements/Bird01.png` (superseded by
 | 5 | `#location` | Zion Garden description, parking/map info, live Leaflet map with a custom branded pin, "ლოკაცია" CTA linking to Google Maps |
 | 6 | `#lead` | "დაგვიტოვე კონტაქტი" lead-capture form → posts to `/api/lead` (see §6) |
 | — | `<footer>` | Partnership pitch card (with bird illustration + modal-triggering CTA) → org badge/contact/nav/organizer logos → copyright bar |
-| — | Partner modal | Hidden by default; the footer's "გახდი პარტნიორი" button opens it. Same field set as the lead form, still submits via `mailto:` (not wired to the backend — see §8) |
+| — | Partner modal | Hidden by default; the footer's "გახდი პარტნიორი" button opens it. No form anymore — just clickable `tel:`/`mailto:` contact links (see §8, superseded item) |
 
 ## 5. Design system
 
@@ -166,13 +166,19 @@ on the same URL.
 
 ## 8. Known open items / not done
 
-- **Ticket purchase link**: every "ბილეთები" button still points to `#lead`
-  (the contact form) — there's no real ticketing platform/URL yet. Update
-  the `href="#lead"` occurrences once one exists.
-- **Partner modal still uses `mailto:`**, not the `/api/lead` backend. Same
-  pattern could be reused (another route branch in `worker.js`, or a `type`
-  field on the existing one) if you want it to send silently like the lead
-  form does.
+- **Ticket purchase link**: there's still no real ticketing platform/URL.
+  The four "ბილეთები" buttons (header, hero, activities dashed card, footer
+  nav) are no longer links at all — they're `<button>`s with the shared
+  `.js-tickets-cta` class; clicking one shows a small "ბილეთები მალე
+  გახდება ხელმისაწვდომი" tooltip instead of navigating (see the "Ticket
+  CTAs" IIFE and `#tickets-tooltip` in `index.html`). The separate "ბილეთის
+  აღება" CTA on the 2026 timeline entry still links to `#lead` (the working
+  contact form) and was left as-is. Once a real ticketing URL exists: point
+  it at that URL directly, or revert the four placeholder buttons back to
+  `<a href="...">` and drop the tooltip JS/CSS/element.
+- **Partner modal**: no longer a form — just clickable `tel:`/`mailto:`
+  contact links, so there's nothing left to wire to `/api/lead`. (This
+  superseded the earlier plan to reuse the lead-form backend pattern here.)
 - **Worker secret** (`GAS_WEB_APP_URL`) needs to be set via
   `npx wrangler secret put GAS_WEB_APP_URL` (or the dashboard) for the lead
   form to actually write to the Sheet — not something committable to the
@@ -261,3 +267,12 @@ on the same URL.
     message to drop the ticket-sales framing in favor of "our team will
     be in touch soon," and made the 2020 timeline video autoplay
     immediately on page load instead of waiting until scrolled into view.
+18. Partner modal: removed the duplicate lead-capture form entirely,
+    replacing it with clickable `tel:`/`mailto:` contact links (retitled
+    "გახდი პარტნიორი") and dropping the now-dead submit/success JS.
+19. Ticket CTAs: since there's still no real ticketing URL, converted the
+    four "ბილეთები" buttons from `<a href="#lead">` links into inert
+    `<button>`s — clicking one now shows a small "ბილეთები მალე
+    გახდება ხელმისაწვდომი" tooltip instead of jumping to the contact
+    form. The unrelated "ბილეთის აღება" CTA on the 2026 timeline entry
+    still links to the working `#lead` form.
