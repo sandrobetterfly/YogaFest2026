@@ -94,10 +94,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .btn-sticker{ transform:rotate(-1.6deg); }
   .btn-sticker:hover{ transform:rotate(-1.6deg) translate(-1px,-1px); }
   .btn-sticker:active{ transform:rotate(-1.6deg) translate(3px,3px); }
-  .footer-link-btn{ background:none; border:0; padding:0; margin:0; font:inherit; color:var(--chartreuse); cursor:pointer; text-align:left; }
-  .footer-link-btn:hover{ color:var(--coral); }
-  .tickets-tooltip{ position:fixed; z-index:200; max-width:230px; padding:10px 16px; border-radius:12px; background:var(--maroon); color:var(--chartreuse); font-size:14px; font-weight:700; line-height:1.4; text-align:center; box-shadow:4px 4px 0 var(--chartreuse); border:2px solid var(--chartreuse); pointer-events:none; opacity:0; transform:translate(-50%,4px); transition:opacity .15s ease, transform .15s ease; }
-  .tickets-tooltip.show{ opacity:1; transform:translate(-50%,0); }
 
   /* cards */
   .card{ border-radius:22px; padding:26px; position:relative; overflow:hidden; }
@@ -118,11 +114,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .fade-in-fast{ opacity:0; animation:cta-fade-in .4s ease-out forwards; }
 
   /* mission illustration -> history overlap card */
-  .history-overlap{ margin-top:clamp(-70px,-8vw,-120px); border-radius:28px 28px 0 0; box-shadow:0 -18px 34px rgba(37,2,22,.35); position:relative; z-index:2; }
+  .history-overlap{ margin-top:clamp(-120px,-8vw,-70px); border-radius:28px 28px 0 0; box-shadow:0 -18px 34px rgba(37,2,22,.35); position:relative; z-index:2; }
 
   @media (prefers-reduced-motion: reduce){
     .fade-in-fast{ opacity:1; animation:none; }
-    #hero-parallax-img, .parallax-el{ transform:none !important; }
+    #hero-parallax-wrap, .parallax-el{ transform:none !important; }
   }
 
   /* decorative blobs replacing missing illustration.png */
@@ -170,7 +166,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="#activities">აქტივობები</a>
         <a href="#location">ლოკაცია</a>
       </nav>
-      <button type="button" class="btn btn-primary btn-sm js-tickets-cta">ბილეთები</button>
+      <a href="https://biletebi.ge/concerts/yogafest" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">ბილეთები</a>
       <button type="button" id="nav-toggle" class="hamburger-btn" aria-label="მენიუ" aria-expanded="false" aria-controls="nav-links">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
@@ -179,7 +175,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </header>
 
 <section id="top" data-screen-label="01 Hero" style="position:relative;overflow:hidden;min-height:clamp(560px,88vh,860px);display:flex;align-items:flex-end;padding:0">
-  <img id="hero-parallax-img" data-parallax="70" src="YogaFest web home cover.jpg" alt="YogaFest — მონაწილეები ბუნებაში, ლისი" fetchpriority="high" decoding="async" style="position:absolute;left:0;right:0;top:-40px;width:100%;height:calc(100% + 80px);object-fit:cover;object-position:center;z-index:0;will-change:transform">
+  <div id="hero-parallax-wrap" data-parallax="70" style="position:absolute;top:-40px;right:0;bottom:-40px;left:0;z-index:0">
+    <img src="YogaFest web home cover.jpg" alt="YogaFest — მონაწილეები ბუნებაში, ლისი" fetchpriority="high" decoding="async" style="display:block;width:100%;height:100%;object-fit:cover;object-position:center">
+  </div>
   <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(54,5,34,.1) 0%,rgba(54,5,34,.45) 55%,rgba(54,5,34,.94) 100%);z-index:1"></div>
   <div style="position:relative;z-index:2;max-width:1180px;margin:0 auto;width:100%;padding:clamp(40px,8vw,96px) clamp(18px,4vw,40px) clamp(48px,6vw,72px);display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(18px,2.6vw,28px)">
     <h1 class="sr-only">YogaFest 2026 — Sober Rave · ფხიზელი ფესტივალი, 5–6 სექტემბერი, Zion Garden, ლისი, თბილისი</h1>
@@ -195,7 +193,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:6px">
       <a href="#location" class="btn btn-secondary btn-lg fade-in-fast" style="animation-delay:.5s">ლოკაცია</a>
-      <button type="button" class="btn btn-primary btn-lg btn-sticker js-tickets-cta fade-in-fast" style="animation-delay:.62s">ბილეთები</button>
+      <a href="https://biletebi.ge/concerts/yogafest" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg btn-sticker fade-in-fast" style="animation-delay:.62s">ბილეთები</a>
     </div>
   </div>
 </section>
@@ -240,7 +238,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
   <div style="overflow:hidden;width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);position:relative">
-    <img class="parallax-el" data-parallax="40" src="Visial Elements/Key_Visual_Illustration_Main03.png" alt="" aria-hidden="true" loading="lazy" decoding="async" style="display:block;width:100%;height:auto;transform:scale(1.15);will-change:transform">
+    <img class="parallax-el" data-parallax="40" data-parallax-scale="1.15" src="Visial Elements/Key_Visual_Illustration_Main03.png" alt="" aria-hidden="true" loading="lazy" decoding="async" style="display:block;width:100%;height:auto;transform:scale(1.15)">
   </div>
 </section>
 
@@ -395,7 +393,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div style="display:flex;flex-direction:column;justify-content:center;gap:18px;padding:clamp(20px,3vw,32px);border:3px dashed rgba(218,218,122,.35);border-radius:22px">
         <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:24px;color:#DADA7A;line-height:1.2">ორი დღე, ერთი ბილეთი</div>
         <p style="margin:0;font-size:16px;line-height:1.6;color:#e0cbd6">გამოსცადე საკუთარ თავზე ფხიზელი გართობის ძალა!</p>
-        <button type="button" class="btn btn-primary btn-md btn-sticker js-tickets-cta">ბილეთები</button>
+        <a href="https://biletebi.ge/concerts/yogafest" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-md btn-sticker">ბილეთები</a>
       </div>
     </div>
   </div>
@@ -502,7 +500,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="#history">ისტორია</a>
         <a href="#activities">აქტივობები</a>
         <a href="#location">ლოკაცია</a>
-        <button type="button" class="footer-link-btn js-tickets-cta">ბილეთები</button>
+        <a href="https://biletebi.ge/concerts/yogafest" target="_blank" rel="noopener noreferrer">ბილეთები</a>
       </div>
       <div style="display:grid;gap:14px">
         <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:#c199ac">ორგანიზატორები</div>
@@ -539,8 +537,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </div>
 
-<div id="tickets-tooltip" class="tickets-tooltip" role="status" aria-live="polite">ბილეთები მალე გახდება ხელმისაწვდომი</div>
-
 <script>
   // --- Parallax scroll (hero cover photo + mission illustration) ---
   // Elements opt in via [data-parallax="<range in px>"]. Skipped entirely for
@@ -561,7 +557,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         var progress = (vh - rect.top) / (vh + rect.height);
         progress = Math.min(Math.max(progress, 0), 1);
         var offset = (progress - 0.5) * range;
-        var scale = el.id === 'hero-parallax-img' ? '' : 'scale(1.15) ';
+        var scaleAttr = el.getAttribute('data-parallax-scale');
+        var scale = scaleAttr ? 'scale(' + scaleAttr + ') ' : '';
         el.style.transform = scale + 'translateY(' + offset.toFixed(1) + 'px)';
       });
       ticking = false;
@@ -706,45 +703,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && modal.style.display === 'flex') closeModal();
     });
-  })();
-
-  // --- Ticket CTAs ("ბილეთები") — no ticketing platform yet, so these no
-  // longer link anywhere; clicking one just shows a small "coming soon" tooltip. ---
-  (function () {
-    var ctas = document.querySelectorAll('.js-tickets-cta');
-    var tooltip = document.getElementById('tickets-tooltip');
-    if (!ctas.length || !tooltip) return;
-
-    var hideTimer = null;
-    var HALF_WIDTH = 120;
-
-    function showTooltip(target) {
-      var rect = target.getBoundingClientRect();
-      var left = rect.left + rect.width / 2;
-      left = Math.min(Math.max(left, HALF_WIDTH + 10), window.innerWidth - HALF_WIDTH - 10);
-      tooltip.style.left = left + 'px';
-      tooltip.style.top = (rect.bottom + 10) + 'px';
-      tooltip.classList.add('show');
-      clearTimeout(hideTimer);
-      hideTimer = setTimeout(hideTooltip, 3000);
-    }
-    function hideTooltip() {
-      tooltip.classList.remove('show');
-    }
-
-    ctas.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        showTooltip(btn);
-      });
-    });
-    document.addEventListener('click', function (e) {
-      if (!e.target.closest('.js-tickets-cta')) hideTooltip();
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') hideTooltip();
-    });
-    window.addEventListener('scroll', hideTooltip, { passive: true });
-    window.addEventListener('resize', hideTooltip);
   })();
 
   // --- Location map (Leaflet) ---
