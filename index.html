@@ -1,6 +1,30 @@
 <!DOCTYPE html>
 <html lang="ka">
 <head>
+<!-- Consent Mode defaults — must run before GTM loads, so any marketing/
+     analytics tags configured inside the GTM container respect the visitor's
+     choice from the cookie banner below. Defaults to "denied" until they
+     choose; a previously saved choice is re-applied immediately for
+     returning visitors so they aren't asked again. -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+    wait_for_update: 500
+  });
+  try {
+    if (localStorage.getItem('yf_cookie_consent') === 'granted') {
+      gtag('consent', 'update', {
+        ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted'
+      });
+    }
+  } catch (e) {}
+</script>
+
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -456,7 +480,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <textarea name="message" rows="4" placeholder="მოკლედ აღწერა შენი საქმიანობის/მეწარმეობის შესახებ." style="min-width:0;padding:14px 16px;border-radius:14px;border:2px solid rgba(218,218,122,.35);background:#360522;color:#DADA7A;font-size:16px;font-weight:500;outline:none;resize:vertical;text-transform:none;letter-spacing:0"></textarea>
         </label>
         <div id="lead-error" role="alert" style="display:none;padding:12px 14px;border-radius:12px;border:2px solid #F52528;background:rgba(245,37,40,.1);color:#F4E1BB;font-size:14px;line-height:1.5"></div>
-        <button type="submit" id="lead-submit" class="btn btn-primary" style="margin-top:4px;padding:16px 28px;font-size:18px;border-radius:999px;white-space:normal;min-width:0">დააკლიკე და გამოაგზავნე</button>
+        <button type="submit" id="lead-submit" class="btn btn-primary btn-md" style="margin-top:4px;justify-self:start;min-width:0">გაგზავნა</button>
       </form>
     </div>
   </div>
@@ -532,7 +556,47 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </div>
 
+<div id="cookie-banner" role="region" aria-label="ქუქი-ფაილების თანხმობა" style="position:fixed;left:0;right:0;bottom:0;z-index:150;display:none;justify-content:center;padding:16px;background:rgba(37,2,22,.97);backdrop-filter:blur(6px);border-top:2px solid rgba(218,218,122,.28)">
+  <div style="max-width:960px;width:100%;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
+    <p style="margin:0;flex:1 1 280px;font-size:14px;line-height:1.55;color:#e0cbd6">ჩვენ ვიყენებთ ქუქი-ფაილებს საიტის გამართული მუშაობის, სტატისტიკისა და მარკეტინგული მიზნებისთვის.</p>
+    <div style="display:flex;gap:10px;flex-shrink:0">
+      <button type="button" id="cookie-decline" class="btn btn-secondary btn-sm">უარყოფა</button>
+      <button type="button" id="cookie-accept" class="btn btn-primary btn-sm">დათანხმება</button>
+    </div>
+  </div>
+</div>
+
 <script>
+  // --- Cookie / marketing consent banner ---
+  // Shown once per browser; the choice is stored locally and mirrored into
+  // Google Consent Mode (see the gtag('consent', ...) calls in <head>) so
+  // GTM tags respect it. See also: consent defaults set before GTM loads.
+  (function () {
+    var STORAGE_KEY = 'yf_cookie_consent';
+    var banner = document.getElementById('cookie-banner');
+    var acceptBtn = document.getElementById('cookie-accept');
+    var declineBtn = document.getElementById('cookie-decline');
+    if (!banner || !acceptBtn || !declineBtn) return;
+
+    var saved = null;
+    try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+    if (!saved) banner.style.display = 'flex';
+
+    function setConsent(granted) {
+      var state = granted ? 'granted' : 'denied';
+      if (window.gtag) {
+        window.gtag('consent', 'update', {
+          ad_storage: state, ad_user_data: state, ad_personalization: state, analytics_storage: state
+        });
+      }
+      try { localStorage.setItem(STORAGE_KEY, state); } catch (e) {}
+      banner.style.display = 'none';
+    }
+
+    acceptBtn.addEventListener('click', function () { setConsent(true); });
+    declineBtn.addEventListener('click', function () { setConsent(false); });
+  })();
+
   // --- Parallax scroll (hero cover photo + mission illustration) ---
   // Elements opt in via [data-parallax="<range in px>"]. Skipped entirely for
   // prefers-reduced-motion. Offset is derived from how far the element has
