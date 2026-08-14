@@ -351,7 +351,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div style="font-family:'Mersad',sans-serif;font-weight:800;font-size:clamp(30px,4.4vw,46px);line-height:1;color:#360522">2026</div>
             <div style="margin-top:8px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#F52528">YogaFest ბრუნდება</div>
             <p style="margin:14px 0 0;font-size:17px;line-height:1.6;color:#4a1233;text-wrap:pretty">YogaFest სიფხიზლის ორდღიანი ფესტივალით ბრუნდება — იოგა პრაქტიკებით, მოძრაობით, მუსიკით, აქტივობების მრავალფეროვნებითა და ინტეგრირებული SoberRave-ის გამოცდილებით.</p>
-            <a href="#lead" class="btn btn-solid btn-md btn-sticker" style="margin-top:20px">ბილეთის აღება</a>
+            <a href="https://biletebi.ge/concerts/yogafest" target="_blank" rel="noopener noreferrer" class="btn btn-solid btn-md btn-sticker" style="margin-top:20px">ბილეთის აღება</a>
           </div>
           <img src="YogaFest web home cover.jpg" alt="YogaFest 2026 — მონაწილეები ბუნებაში" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:22px;border:3px solid #360522;box-shadow:6px 6px 0 #F52528;display:block">
         </div>
@@ -556,45 +556,44 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </div>
 
-<div id="cookie-banner" role="region" aria-label="ქუქი-ფაილების თანხმობა" style="position:fixed;left:0;right:0;bottom:0;z-index:150;display:none;justify-content:center;padding:16px;background:rgba(37,2,22,.97);backdrop-filter:blur(6px);border-top:2px solid rgba(218,218,122,.28)">
+<div id="cookie-banner" role="region" aria-label="ქუქი-ფაილების შესახებ ინფორმაცია" style="position:fixed;left:0;right:0;bottom:0;z-index:150;display:none;justify-content:center;padding:16px;background:rgba(90,90,90,.45);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.18)">
   <div style="max-width:960px;width:100%;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
-    <p style="margin:0;flex:1 1 280px;font-size:14px;line-height:1.55;color:#e0cbd6">ჩვენ ვიყენებთ ქუქი-ფაილებს საიტის გამართული მუშაობის, სტატისტიკისა და მარკეტინგული მიზნებისთვის.</p>
-    <div style="display:flex;gap:10px;flex-shrink:0">
-      <button type="button" id="cookie-decline" class="btn btn-secondary btn-sm">უარყოფა</button>
-      <button type="button" id="cookie-accept" class="btn btn-primary btn-sm">დათანხმება</button>
-    </div>
+    <p style="margin:0;flex:1 1 280px;font-size:14px;line-height:1.55;color:#fff">ჩვენ ვიყენებთ ქუქი-ფაილებს საიტის გამართული მუშაობის, სტატისტიკისა და მარკეტინგული მიზნებისთვის.</p>
+    <button type="button" id="cookie-close" aria-label="დახურვა" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;font-size:15px;line-height:1;cursor:pointer">✕</button>
   </div>
 </div>
 
 <script>
   // --- Cookie / marketing consent banner ---
-  // Shown once per browser; the choice is stored locally and mirrored into
-  // Google Consent Mode (see the gtag('consent', ...) calls in <head>) so
-  // GTM tags respect it. See also: consent defaults set before GTM loads.
+  // Informational only — no accept/decline choice. Dismissing it (via the
+  // close button or a click anywhere else on the page) acknowledges it and
+  // grants Google Consent Mode (see the gtag('consent', ...) calls in
+  // <head>) so tags configured in GTM can run. Shown once per browser.
   (function () {
     var STORAGE_KEY = 'yf_cookie_consent';
     var banner = document.getElementById('cookie-banner');
-    var acceptBtn = document.getElementById('cookie-accept');
-    var declineBtn = document.getElementById('cookie-decline');
-    if (!banner || !acceptBtn || !declineBtn) return;
+    var closeBtn = document.getElementById('cookie-close');
+    if (!banner || !closeBtn) return;
 
     var saved = null;
     try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
     if (!saved) banner.style.display = 'flex';
 
-    function setConsent(granted) {
-      var state = granted ? 'granted' : 'denied';
+    function dismiss() {
+      if (banner.style.display === 'none') return;
       if (window.gtag) {
         window.gtag('consent', 'update', {
-          ad_storage: state, ad_user_data: state, ad_personalization: state, analytics_storage: state
+          ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted'
         });
       }
-      try { localStorage.setItem(STORAGE_KEY, state); } catch (e) {}
+      try { localStorage.setItem(STORAGE_KEY, 'granted'); } catch (e) {}
       banner.style.display = 'none';
     }
 
-    acceptBtn.addEventListener('click', function () { setConsent(true); });
-    declineBtn.addEventListener('click', function () { setConsent(false); });
+    closeBtn.addEventListener('click', dismiss);
+    document.addEventListener('click', function (e) {
+      if (!banner.contains(e.target)) dismiss();
+    });
   })();
 
   // --- Parallax scroll (hero cover photo + mission illustration) ---
