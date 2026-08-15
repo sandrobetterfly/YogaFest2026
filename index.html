@@ -56,8 +56,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700;800;900&display=swap">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -145,6 +145,27 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   /* decorative blobs replacing missing illustration.png */
   .blob{ position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; }
 
+  /* Floating background icons framework -----------------------------------
+     Reusable decorative layer: small SVGs (see the icon sprite <defs> near
+     the top of <body>, sourced from "fest svg icons/") scattered across
+     sections that gently bob/rotate in place. They scroll with the page
+     normally (no JS — each icon is an absolutely-positioned child of its
+     section), so as you scroll the whole page they read as a moving
+     background layer. Color is per-instance (currentColor + inline
+     style="color:...") chosen to fit that section's own background.
+     Usage: <svg class="floating-icon" width="W" height="H" aria-hidden="true"
+     style="top:X%;left:Y%;color:C;animation-duration:Ds;animation-delay:Ds">
+     <use href="#icon-NAME"/></svg> — placed as the first child inside a
+     `position:relative` section so it paints behind the real content.
+     To add more icons: drop a new .svg in "fest svg icons/", add a matching
+     <symbol id="icon-NAME" viewBox="..."> to the sprite <defs>, then
+     reference it the same way. */
+  .floating-icon{ position:absolute; pointer-events:none; opacity:.28; animation-name:icon-float; animation-timing-function:ease-in-out; animation-iteration-count:infinite; }
+  @keyframes icon-float{ 0%,100%{ transform:translateY(0) rotate(0deg); } 50%{ transform:translateY(-14px) rotate(6deg); } }
+  @media (prefers-reduced-motion: reduce){
+    .floating-icon{ animation:none; }
+  }
+
   /* screen-reader-only (keeps semantic h1 for SEO/a11y without changing the visual design) */
   .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
@@ -168,11 +189,104 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </style>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
+<!-- Google Tag Manager (noscript) — must be immediately after <body> per
+     Google's own placement guidance, so it still fires for no-JS visitors
+     regardless of what else is on the page. -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P2NVJ7KT"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
+<!-- Icon sprite for the floating background icons (see .floating-icon below).
+     Source files: "fest svg icons/". Defined once here, referenced via
+     <use href="#icon-NAME"> so the artwork isn't duplicated per instance;
+     each instance sets its own size/position/color/timing inline. -->
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs>
+    <symbol id="icon-dots" viewBox="0 0 160 160">
+      <circle cx="35" cy="45" r="10" fill="currentColor"/>
+      <circle cx="85" cy="30" r="7" fill="currentColor"/>
+      <circle cx="125" cy="65" r="12" fill="currentColor"/>
+      <circle cx="60" cy="100" r="8" fill="currentColor"/>
+      <circle cx="115" cy="125" r="6" fill="currentColor"/>
+    </symbol>
+    <symbol id="icon-horus-eye" viewBox="0 0 1125 803">
+      <path d="M319 -219 300 -213 458 271Q405 280 348.0 291.0Q291 302 240.0 313.5Q189 325 153.5 333.0Q118 341 107 344Q92 331 80.0 319.5Q68 308 63 303L49 317Q92 360 153.5 406.5Q215 453 287.0 493.5Q359 534 435.5 559.0Q512 584 585 584Q679 584 757.0 557.5Q835 531 899.5 492.5Q964 454 1018 417Q1062 386 1100.5 362.5Q1139 339 1174 332L1170 313Q1146 317 1121.0 329.5Q1096 342 1069 359Q1062 357 1026.5 347.0Q991 337 938.0 323.0Q885 309 825.5 295.0Q766 281 711 271L869 -213L850 -219L692 267Q631 256 594 256V-219H575V256Q534 259 477 268ZM585 277Q625 277 657.0 296.5Q689 316 708.5 348.0Q728 380 728 419Q728 459 708.5 491.0Q689 523 657.0 542.5Q625 562 585 562Q546 562 513.5 542.5Q481 523 461.5 491.0Q442 459 442 419Q442 380 461.5 348.0Q481 316 513.5 296.5Q546 277 585 277ZM673 283Q723 291 781.5 304.5Q840 318 895.0 332.0Q950 346 991.0 357.5Q1032 369 1048 373L1007 400Q961 431 909.5 463.0Q858 495 799.0 521.0Q740 547 669 558Q704 536 725.5 499.5Q747 463 747 419Q747 376 726.5 340.5Q706 305 673 283ZM495 285Q463 306 443.0 341.5Q423 377 423 419Q423 462 443.0 497.5Q463 533 496 555Q421 540 351.0 505.5Q281 471 223.5 431.5Q166 392 126 360Q141 357 180.5 347.5Q220 338 274.0 326.5Q328 315 386.0 304.0Q444 293 495 285Z" fill="currentColor" transform="translate(-49 584) scale(1 -1)"/>
+    </symbol>
+    <symbol id="icon-orb" viewBox="0 0 200 200">
+      <g stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M100 24c42 0 76 34 76 76s-34 76-76 76-76-34-76-76 34-76 76-76Z"/>
+        <path d="M64 40c9 14 25 23 36 23 11 0 27-9 36-23"/>
+        <path d="M39 82c16 6 34 5 45 0 12-5 24-12 33-12 9 0 23 7 45 12"/>
+        <path d="M39 118c16-6 34-5 45 0 12 5 24 12 33 12 9 0 23-7 45-12"/>
+        <path d="M64 160c9-14 25-23 36-23 11 0 27 9 36 23"/>
+        <circle cx="100" cy="100" r="16"/>
+        <path d="M91 98c4-5 10-9 17-10-2 7-8 11-17 10Z"/>
+      </g>
+    </symbol>
+    <symbol id="icon-sparkle" viewBox="0 0 200 200">
+      <g stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M100 26c6 23 12 40 0 58-12-18-6-35 0-58Z"/>
+        <path d="M174 100c-23 6-40 12-58 0 18-12 35-6 58 0Z"/>
+        <path d="M100 174c-6-23-12-40 0-58 12 18 6 35 0 58Z"/>
+        <path d="M26 100c23-6 40-12 58 0-18 12-35 6-58 0Z"/>
+        <path d="M148 52c-10 12-18 23-32 28 7-13 18-20 32-28Z"/>
+        <path d="M52 52c12 10 23 18 28 32-13-7-20-18-28-32Z"/>
+        <path d="M148 148c-12-10-23-18-28-32 13 7 20 18 28 32Z"/>
+        <path d="M52 148c10-12 18-23 32-28-7 13-18 20-32 28Z"/>
+        <circle cx="100" cy="100" r="9" fill="currentColor" stroke="none"/>
+        <circle cx="42" cy="34" r="8"/>
+        <path d="M41 20v8M41 40v8M27 34h8M47 34h8"/>
+        <circle cx="162" cy="161" r="6"/>
+        <path d="M162 149v6M162 167v6M150 161h6M168 161h6"/>
+      </g>
+    </symbol>
+    <symbol id="icon-sparkle2" viewBox="0 0 120 120">
+      <path d="M60 8c4 25 11 41 20 52 9 10 20 17 32 20-25 4-41 11-52 20-10 9-17 20-20 32-4-25-11-41-20-52C11 70 0 63-12 60c25-4 41-11 52-20C50 31 57 20 60 8Z" transform="translate(12 -2)" fill="currentColor"/>
+    </symbol>
+    <symbol id="icon-spiral" viewBox="0 0 200 200">
+      <g stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M110 25c27 2 50 24 51 51 1 32-24 58-58 59-35 2-65-23-67-58-2-37 28-66 65-67 40-1 72 30 73 70 1 44-34 79-78 80"/>
+        <path d="M119 60c15 2 27 14 28 28 1 18-13 32-32 33-19 1-36-13-37-33-1-21 15-38 36-38 22 0 39 17 40 39"/>
+        <path d="M102 82c10 0 18 7 18 17 1 10-7 19-18 19-11 1-20-7-20-18s9-18 20-18Z"/>
+        <path d="M160 48c5 5 11 8 18 9-5 5-12 7-19 6"/>
+        <path d="M139 25c1 7 5 13 10 18-8 0-14-3-18-8"/>
+      </g>
+    </symbol>
+    <symbol id="icon-starburst" viewBox="0 0 200 200">
+      <g stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M100 17c4 27 10 50 0 71-10-21-4-44 0-71Z"/>
+        <path d="M183 100c-27 4-50 10-71 0 21-10 44-4 71 0Z"/>
+        <path d="M100 183c-4-27-10-50 0-71 10 21 4 44 0 71Z"/>
+        <path d="M17 100c27-4 50-10 71 0-21 10-44 4-71 0Z"/>
+        <path d="M154 46c-16 19-28 37-48 44 11-19 29-28 48-44Z"/>
+        <path d="M46 46c19 16 37 28 44 48-19-11-28-29-44-48Z"/>
+        <path d="M154 154c-19-16-37-28-44-48 19 11 28 29 44 48Z"/>
+        <path d="M46 154c16-19 28-37 48-44-11 19-29 28-48 44Z"/>
+        <circle cx="100" cy="100" r="12" fill="currentColor" stroke="none"/>
+        <circle cx="100" cy="100" r="26"/>
+      </g>
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 200 200">
+      <g stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="100" cy="100" r="34"/>
+        <path d="M100 38c8 8 8 20 0 28-8-8-8-20 0-28Z" fill="currentColor" stroke="none" opacity=".14"/>
+        <path d="M100 12c-2 13 5 20 0 30-4-9 2-18 0-30Z"/>
+        <path d="M131 21c-5 12-1 20-9 28 0-10 6-16 9-28Z"/>
+        <path d="M156 44c-9 10-8 19-19 24 4-10 11-14 19-24Z"/>
+        <path d="M187 100c-13-2-20 5-30 0 9-4 18 2 30 0Z"/>
+        <path d="M178 132c-12-5-20-1-28-9 10 0 16 6 28 9Z"/>
+        <path d="M155 158c-10-9-19-8-24-19 10 4 14 11 24 19Z"/>
+        <path d="M100 188c2-13-5-20 0-30 4 9-2 18 0 30Z"/>
+        <path d="M69 179c5-12 1-20 9-28 0 10-6 16-9 28Z"/>
+        <path d="M44 156c9-10 8-19 19-24-4 10-11 14-19 24Z"/>
+        <path d="M13 100c13 2 20-5 30 0-9 4-18-2-30 0Z"/>
+        <path d="M22 68c12 5 20 1 28 9-10 0-16-6-28-9Z"/>
+        <path d="M45 42c10 9 19 8 24 19-10-4-14-11-24-19Z"/>
+        <path d="M74 92c7-11 19-18 26-25 7 8 18 14 25 25-9-4-16-5-25-5s-16 1-26 5Z"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
 <div style="background:#360522;color:#DADA7A;overflow-x:hidden">
 
 <header style="position:sticky;top:0;z-index:60;background:rgba(37,2,22,.92);backdrop-filter:blur(6px);border-bottom:2px solid rgba(218,218,122,.22)">
@@ -201,6 +315,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(54,5,34,.1) 0%,rgba(54,5,34,.45) 55%,rgba(54,5,34,.94) 100%);z-index:1"></div>
   <div style="position:relative;z-index:2;max-width:1180px;margin:0 auto;width:100%;padding:clamp(40px,8vw,96px) clamp(18px,4vw,40px) clamp(48px,6vw,72px);display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(18px,2.6vw,28px)">
+    <svg class="floating-icon" width="34" height="34" aria-hidden="true" style="top:8%;left:8%;color:#DADA7A;animation-duration:6.5s;animation-delay:.2s"><use href="#icon-sun"/></svg>
+    <svg class="floating-icon" width="26" height="26" aria-hidden="true" style="top:72%;left:90%;color:#F47C6C;animation-duration:7.8s;animation-delay:1.1s"><use href="#icon-sparkle"/></svg>
+    <svg class="floating-icon" width="36" height="26" aria-hidden="true" style="top:50%;left:3%;color:#F47C6C;animation-duration:7.9s;animation-delay:.8s"><use href="#icon-horus-eye"/></svg>
     <h1 class="sr-only">YogaFest 2026 — Sober Rave · ფხიზელი ფესტივალი, 5–6 სექტემბერი, Zion Garden, ლისი, თბილისი</h1>
     <div style="display:inline-flex;align-items:center;gap:12px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#F47C6C">
       <svg class="sb sb-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 0l2.4 7.3L22 9.7l-7.6 2.5L12 22l-2.4-7.8L2 11.7l7.6-2.4L12 0z" fill="currentColor"/></svg>
@@ -220,6 +337,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </section>
 
 <section id="mission" data-screen-label="02 Mission" style="scroll-margin-top:78px;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px) 0;border-top:2px solid rgba(218,218,122,.18);position:relative">
+  <svg class="floating-icon" width="30" height="30" aria-hidden="true" style="top:10%;left:90%;color:#8DD8F8;animation-duration:7s;animation-delay:.5s"><use href="#icon-orb"/></svg>
+  <svg class="floating-icon" width="24" height="24" aria-hidden="true" style="top:80%;left:6%;color:#DADA7A;animation-duration:6.2s;animation-delay:1.4s"><use href="#icon-dots"/></svg>
+  <svg class="floating-icon" width="24" height="24" aria-hidden="true" style="top:45%;left:4%;color:#DADA7A;animation-duration:6.7s;animation-delay:1s"><use href="#icon-sparkle"/></svg>
   <div style="max-width:1180px;margin:0 auto clamp(56px,8vw,110px)">
     <div style="max-width:720px;margin:0 auto;text-align:center">
       <div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#8DD8F8">
@@ -261,7 +381,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <img src="Visial Elements/Key_Visual_Illustration_Main03.png" alt="" aria-hidden="true" loading="lazy" decoding="async" style="display:block;width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);height:auto">
 </section>
 
-<section id="history" data-screen-label="03 History" style="scroll-margin-top:78px;background:#DADA7A;color:#360522;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px)">
+<section id="history" data-screen-label="03 History" style="scroll-margin-top:78px;background:#DADA7A;color:#360522;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px);position:relative">
+  <svg class="floating-icon" width="28" height="28" aria-hidden="true" style="top:6%;left:92%;color:#360522;animation-duration:7.4s;animation-delay:.3s"><use href="#icon-starburst"/></svg>
+  <svg class="floating-icon" width="26" height="26" aria-hidden="true" style="top:88%;left:4%;color:#F52528;animation-duration:6.8s;animation-delay:1.6s"><use href="#icon-spiral"/></svg>
+  <svg class="floating-icon" width="32" height="23" aria-hidden="true" style="top:45%;left:90%;color:#360522;animation-duration:7.2s;animation-delay:.5s"><use href="#icon-horus-eye"/></svg>
+  <svg class="floating-icon" width="20" height="20" aria-hidden="true" style="top:40%;left:6%;color:#F52528;animation-duration:6.5s;animation-delay:1.3s"><use href="#icon-sparkle"/></svg>
   <div style="max-width:1080px;margin:0 auto">
     <div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#F52528">
       <svg class="sb sb-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 0l2.4 7.3L22 9.7l-7.6 2.5L12 22l-2.4-7.8L2 11.7l7.6-2.4L12 0z" fill="currentColor"/></svg>
@@ -361,6 +485,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </section>
 
 <section id="activities" data-screen-label="04 Activities" style="scroll-margin-top:78px;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px);position:relative;overflow:hidden">
+  <svg class="floating-icon" width="36" height="26" aria-hidden="true" style="top:8%;left:4%;color:#F47C6C;animation-duration:7.1s;animation-delay:.6s"><use href="#icon-horus-eye"/></svg>
+  <svg class="floating-icon" width="24" height="24" aria-hidden="true" style="top:85%;left:92%;color:#DADA7A;animation-duration:6.4s;animation-delay:1.2s"><use href="#icon-sparkle2"/></svg>
+  <svg class="floating-icon" width="34" height="24" aria-hidden="true" style="top:50%;left:92%;color:#DADA7A;animation-duration:7.6s;animation-delay:.9s"><use href="#icon-horus-eye"/></svg>
   <div style="max-width:1180px;margin:0 auto;position:relative">
     <div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#F47C6C">
       <svg class="sb sb-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 0l2.4 7.3L22 9.7l-7.6 2.5L12 22l-2.4-7.8L2 11.7l7.6-2.4L12 0z" fill="currentColor"/></svg>
@@ -418,7 +545,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </section>
 
-<section id="location" data-screen-label="05 Location" style="scroll-margin-top:78px;background:#F4E1BB;color:#360522;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px)">
+<section id="location" data-screen-label="05 Location" style="scroll-margin-top:78px;background:#F4E1BB;color:#360522;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px);position:relative">
+  <svg class="floating-icon" width="22" height="22" aria-hidden="true" style="top:8%;left:90%;color:#360522;animation-duration:7.6s;animation-delay:.4s"><use href="#icon-dots"/></svg>
+  <svg class="floating-icon" width="24" height="24" aria-hidden="true" style="top:85%;left:6%;color:#F52528;animation-duration:6.9s;animation-delay:1.5s"><use href="#icon-orb"/></svg>
+  <svg class="floating-icon" width="30" height="21" aria-hidden="true" style="top:45%;left:4%;color:#F52528;animation-duration:7s;animation-delay:.6s"><use href="#icon-horus-eye"/></svg>
+  <svg class="floating-icon" width="20" height="20" aria-hidden="true" style="top:50%;left:92%;color:#360522;animation-duration:6.4s;animation-delay:1.4s"><use href="#icon-sparkle"/></svg>
   <div style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(28px,4vw,56px);align-items:start">
     <div>
       <div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.22em;color:#F52528">
@@ -440,6 +571,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </section>
 
 <section id="lead" data-screen-label="06 Lead capture" style="scroll-margin-top:78px;padding:clamp(56px,8vw,110px) clamp(18px,4vw,40px);position:relative;overflow:hidden;border-top:2px solid rgba(218,218,122,.18)">
+  <svg class="floating-icon" width="26" height="26" aria-hidden="true" style="top:10%;left:88%;color:#F47C6C;animation-duration:7.3s;animation-delay:.7s"><use href="#icon-spiral"/></svg>
+  <svg class="floating-icon" width="24" height="24" aria-hidden="true" style="top:82%;left:8%;color:#8DD8F8;animation-duration:6.6s;animation-delay:1.3s"><use href="#icon-sun"/></svg>
+  <svg class="floating-icon" width="32" height="23" aria-hidden="true" style="top:45%;left:90%;color:#8DD8F8;animation-duration:7.7s;animation-delay:1s"><use href="#icon-horus-eye"/></svg>
   <div class="blob" aria-hidden="true" style="left:-160px;bottom:-160px;width:520px;height:520px;background:radial-gradient(circle,rgba(244,124,108,.18),transparent 70%)"></div>
   <div style="max-width:1180px;margin:0 auto;position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,5vw,64px);align-items:start">
     <div>
@@ -486,7 +620,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </section>
 
-<footer data-screen-label="07 Footer" style="background:#250216;padding:clamp(48px,6vw,80px) clamp(18px,4vw,40px) 40px;border-top:2px solid rgba(218,218,122,.18)">
+<footer data-screen-label="07 Footer" style="background:#250216;padding:clamp(48px,6vw,80px) clamp(18px,4vw,40px) 40px;border-top:2px solid rgba(218,218,122,.18);position:relative">
+  <svg class="floating-icon" width="26" height="26" aria-hidden="true" style="top:10%;left:92%;color:#DADA7A;animation-duration:7.5s;animation-delay:.9s"><use href="#icon-sparkle"/></svg>
+  <svg class="floating-icon" width="20" height="20" aria-hidden="true" style="top:75%;left:5%;color:#F47C6C;animation-duration:6.3s;animation-delay:1.7s"><use href="#icon-starburst"/></svg>
+  <svg class="floating-icon" width="34" height="24" aria-hidden="true" style="top:45%;left:6%;color:#F47C6C;animation-duration:7.3s;animation-delay:.7s"><use href="#icon-horus-eye"/></svg>
+  <svg class="floating-icon" width="22" height="22" aria-hidden="true" style="top:45%;left:92%;color:#DADA7A;animation-duration:6.6s;animation-delay:1.5s"><use href="#icon-sparkle"/></svg>
   <div style="max-width:1180px;margin:0 auto;display:grid;gap:clamp(32px,4vw,56px)">
     <div style="position:relative;overflow:hidden;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(24px,3vw,48px);align-items:center;padding:clamp(24px,3vw,40px);border:3px solid rgba(218,218,122,.28);border-radius:22px">
       <img src="Visial Elements/Bird02.png" alt="" aria-hidden="true" loading="lazy" decoding="async" style="position:absolute;right:0;bottom:-16px;width:420px;max-width:75%;height:auto;pointer-events:none;z-index:0">
@@ -632,6 +770,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     update();
   })();
 
+  // --- GTM/dataLayer: ticket CTA clicks ---
+  // GTM's own dashboard-configured triggers can auto-track outbound link
+  // clicks, but that depends on trigger setup we can't verify from the
+  // code. Pushing an explicit event here means the click is always
+  // captured regardless of GTM container configuration. One delegated
+  // listener covers every "ბილეთები" / "ბილეთის აღება" CTA on the page,
+  // since they all share the same destination URL.
+  (function () {
+    var TICKET_URL = 'https://biletebi.ge/concerts/yogafest';
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest('a[href="' + TICKET_URL + '"]');
+      if (!link) return;
+      var section = link.closest('section, header, footer');
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'ticket_cta_click',
+        cta_location: (section && (section.id || section.tagName.toLowerCase())) || 'unknown'
+      });
+    });
+  })();
+
   // --- Mobile hamburger menu ---
   (function () {
     var toggle = document.getElementById('nav-toggle');
@@ -669,7 +828,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
   })();
 
-  // --- Lead form: submit to /api/lead (Cloudflare Pages Function -> Zoho email) ---
+  // --- Lead form: submit to /api/lead (Cloudflare Worker -> Google Sheet) ---
   (function () {
     var form = document.getElementById('lead-form');
     var success = document.getElementById('lead-success');
@@ -721,12 +880,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           if (result.ok) {
             form.style.display = 'none';
             success.style.display = 'flex';
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: 'lead_form_submit_success' });
           } else {
-            showError(result.data && result.data.error);
+            var errorType = (result.data && result.data.error) || 'unknown';
+            showError(errorType);
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: 'lead_form_submit_error', error_type: errorType });
           }
         })
         .catch(function () {
           showError('network');
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({ event: 'lead_form_submit_error', error_type: 'network' });
         })
         .finally(function () {
           submitBtn.disabled = false;
@@ -748,6 +914,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       modal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
       closeBtn.focus();
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'partner_modal_open' });
     }
     function closeModal() {
       modal.style.display = 'none';

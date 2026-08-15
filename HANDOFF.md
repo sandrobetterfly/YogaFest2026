@@ -3,7 +3,7 @@
 **Repo:** [github.com/sandrobetterfly/YogaFest2026](https://github.com/sandrobetterfly/YogaFest2026) (public, `main` branch)
 **Live stack:** Cloudflare Worker with static assets, project `yogafest2026` (not Pages — see §2)
 **Language:** Georgian (ka), single-page site
-**Last updated:** 2026-08-11
+**Last updated:** 2026-08-15
 
 ---
 
@@ -84,7 +84,7 @@ in case they're wanted later): `Visial Elements/Bird01.png` (superseded by
 
 | # | Section (`id`) | Content |
 |---|---|---|
-| — | `<header>` | Sticky nav — wordmark logo, jump links, "ბილეთები" button (placeholder — see §8); collapses to a hamburger menu ≤760px |
+| — | `<header>` | Sticky nav — wordmark logo, jump links, "ბილეთები" button linking to the live ticket shop; collapses to a hamburger menu ≤760px |
 | 1 | `#top` (Hero) | Full-bleed cover photo, "Sober Rave" eyebrow, big "YOGAFEST 2026" `<h1>`, subtitle, date/venue, single ticket CTA |
 | 2 | `#mission` | "ჩვენი მისია" mission statement, 3 cards (გარემო / პრობლემა / შესაძლებლობა — environment/problem/opportunity), full-bleed brand illustration bridging into the next section |
 | 3 | `#history` | Green-background timeline, 2015 → 2026, one entry per year with a photo (or the 2020 YouTube embed, or no image for the 2024 "paused" year) |
@@ -166,19 +166,28 @@ on the same URL.
 
 ## 8. Known open items / not done
 
-- **Ticket purchase link**: there's still no real ticketing platform/URL.
-  The four "ბილეთები" buttons (header, hero, activities dashed card, footer
-  nav) are no longer links at all — they're `<button>`s with the shared
-  `.js-tickets-cta` class; clicking one shows a small "ბილეთები მალე
-  გახდება ხელმისაწვდომი" tooltip instead of navigating (see the "Ticket
-  CTAs" IIFE and `#tickets-tooltip` in `index.html`). The separate "ბილეთის
-  აღება" CTA on the 2026 timeline entry still links to `#lead` (the working
-  contact form) and was left as-is. Once a real ticketing URL exists: point
-  it at that URL directly, or revert the four placeholder buttons back to
-  `<a href="...">` and drop the tooltip JS/CSS/element.
+- **Ticket purchase link**: resolved — all five "ბილეთები" / "ბილეთის
+  აღება" CTAs (header, hero, activities dashed card, footer nav, 2026
+  timeline entry) now link to `https://biletebi.ge/concerts/yogafest`
+  (`target="_blank" rel="noopener noreferrer"`). The earlier
+  "coming soon" tooltip placeholder was removed entirely.
 - **Partner modal**: no longer a form — just clickable `tel:`/`mailto:`
   contact links, so there's nothing left to wire to `/api/lead`. (This
   superseded the earlier plan to reuse the lead-form backend pattern here.)
+- **No Content-Security-Policy** is set (no `<meta>` CSP, no CSP response
+  header from the Worker). Not implemented in this pass — building one
+  correctly means enumerating every real external origin the page loads
+  (GTM, Google Fonts, unpkg/Leaflet, youtube-nocookie.com iframe,
+  tile.openstreetmap.org) and testing it doesn't break any of them, which
+  felt like its own separate piece of work rather than a quick add-on to
+  a general bug pass. Worth doing deliberately if this ever matters more.
+- **`fest svg icons/`** (source files for the floating background icons)
+  is untracked in git (`git status` shows `??`). The icons are fully
+  inlined into `index.html` as an SVG sprite now, so the site doesn't
+  depend on that folder being deployed — it's just kept locally for
+  reference/future edits. Add it to `.gitignore` if you don't want it
+  showing up as untracked, or `git add` it if you'd rather have the
+  source files archived in the repo. Neither has been decided yet.
 - **Worker secret** (`GAS_WEB_APP_URL`) needs to be set via
   `npx wrangler secret put GAS_WEB_APP_URL` (or the dashboard) for the lead
   form to actually write to the Sheet — not something committable to the
@@ -275,4 +284,70 @@ on the same URL.
     `<button>`s — clicking one now shows a small "ბილეთები მალე
     გახდება ხელმისაწვდომი" tooltip instead of jumping to the contact
     form. The unrelated "ბილეთის აღება" CTA on the 2026 timeline entry
-    still links to the working `#lead` form.
+    still links to the working `#lead` form. *(Superseded by item 21 —
+    tickets went on sale shortly after.)*
+20. Added a cookie/marketing consent banner: Google Consent Mode v2
+    defaults set in `<head>` before GTM loads (all signals default
+    "denied"), a bottom banner that initially had Accept/Decline buttons,
+    then was reworked per feedback into a plain informational notice —
+    just a close (✕) button, dismissible any way (✕ or a click anywhere
+    else on the page), visually a translucent gray/frosted-glass bar. Any
+    dismissal grants consent and is remembered in `localStorage`.
+21. Ticket CTAs, part 2: tickets went on sale, so all five "ბილეთები" /
+    "ბილეთის აღება" CTAs (header, hero, activities card, footer nav, 2026
+    timeline entry) now link to `https://biletebi.ge/concerts/yogafest`
+    (new tab). The item-19 placeholder tooltip — `#tickets-tooltip`, its
+    CSS, and the `js-tickets-cta` click handling — was removed entirely.
+22. Visual polish pass: hero cover photo gets a subtle bounded parallax
+    drift on scroll (implemented via a wrapper `<div>` around the `<img>`
+    rather than transforming the image itself, to avoid a known WebKit
+    bug where `object-fit` + `transform` on the same element can fail to
+    render); hero CTAs fade in fast on page load; every section-eyebrow
+    star now rotates continuously like the hero's "Sober Rave" star. A
+    matching parallax + history-section-overlap effect was also added to
+    the mission illustration, then fully reverted after reports it wasn't
+    rendering reliably on some devices — that illustration is back to a
+    plain full-bleed image with no wrapper/transform/overlap.
+23. Floating background icons: built a reusable framework first
+    (`.floating-icon` CSS class + one scroll-bound bob/rotate animation,
+    `prefers-reduced-motion` respected, no JS beyond reading each
+    element's own inline position) using placeholder star icons, then
+    swapped in the real artwork from `fest svg icons/` — 8 icons (dots,
+    horus-eye, orb, sparkle, sparkle2, spiral, starburst, sun) defined
+    once as an SVG sprite (`<symbol>`/`<use>`, see near the top of
+    `<body>`) so the path data isn't duplicated per instance. Colored
+    per-instance to fit each section's background. Started at 2 icons
+    per section (14 total), then added 6 more horus-eye and 4 more
+    sparkle instances per request (24 total).
+24. Lead form polish: submit button label shortened from "დააკლიკე და
+    გამოაგზავნე" to "გაგზავნა" and resized from a full-width stretched
+    button to a compact left-aligned one. Separately, fixed a real mobile
+    layout bug: the form is a single-column CSS grid, and the submit
+    button's old long label — kept on one line by the site-wide
+    `.btn{white-space:nowrap}` rule — was the widest item, forcing the
+    whole grid column (and therefore every field) wider than its card,
+    crowding them against the right edge. Fixed with `white-space:normal`
+    + `min-width:0` on the button, and `min-width:0` defensively on the
+    other fields/labels against the same class of bug recurring later.
+25. Full code review + GTM audit pass: fixed a `.history-overlap`
+    `clamp()` with its min/max arguments backwards (was silently stuck at
+    a flat value instead of scaling with viewport — moot now since that
+    class was removed in item 22, but was a real bug while it existed);
+    moved the GTM `<noscript>` fallback to be the true first element
+    after `<body>` (Google's own placement guidance — it had ended up
+    after the icon sprite); added Subresource Integrity hashes (computed
+    directly from the fetched files, not guessed) to the Leaflet CDN
+    `<link>`/`<script>` tags, since they were loading with no integrity
+    check; fixed a stale comment describing the lead form as posting to
+    a "Cloudflare Pages Function -> Zoho email" (inaccurate for a while —
+    it's Worker -> Google Sheet); and added explicit `dataLayer.push()`
+    events (`lead_form_submit_success`, `lead_form_submit_error` with an
+    `error_type`, `ticket_cta_click` with a `cta_location`,
+    `partner_modal_open`) for the interactions GTM's automatic triggers
+    can't reliably capture on their own — the lead form uses `fetch()`
+    with no real page navigation, so GTM's built-in Form Submission
+    trigger fires on click regardless of whether the submission actually
+    succeeded. Verified end-to-end in-browser: Consent Mode defaults land
+    in `dataLayer` before GTM's own init events, all four custom events
+    fire correctly, and GTM's own native auto-tracking (`gtm.linkClick`,
+    `gtm.formSubmit`) still fires alongside them.
